@@ -1,0 +1,1380 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Symbol.IO</name>
+    </assembly>
+    <members>
+        <member name="T:Symbol.IO.Resource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_AN_GETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in getting analog input port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_AN_READPORT">
+            <summary>
+              Looks up a localized string similar to Failure in reading analog input port value.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_AN_SETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in setting analog input port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DI_GETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in getting digital input port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DI_GETPORTSTATE">
+            <summary>
+              Looks up a localized string similar to Failure in getting digital input port state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DI_SETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in setting digital input port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DISPOSEDOBJECTACCESS">
+            <summary>
+              Looks up a localized string similar to Trying to access data after object is disposed.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DO_GETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in getting digital output port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DO_GETPORTSTATE">
+            <summary>
+              Looks up a localized string similar to Failure in getting digital output port state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DO_RESETPORTS">
+            <summary>
+              Looks up a localized string similar to Failure in resetting digital output ports.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DO_SETPORTCONFIG">
+            <summary>
+              Looks up a localized string similar to Failure in setting digital output port configuration.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_DO_SETPORTSTATE">
+            <summary>
+              Looks up a localized string similar to Failure in setting digital output port state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_REGISTERNOTIFICATION">
+            <summary>
+              Looks up a localized string similar to Failure in register for notification.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_RESETEVENT">
+            <summary>
+              Looks up a localized string similar to Failure in resetting event.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_SETEVENT">
+            <summary>
+              Looks up a localized string similar to Failure in setting event.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_SI_GETIGNITIIONSTATE">
+            <summary>
+              Looks up a localized string similar to Failure in getting system input ignition state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_SI_GETPORTSTATE">
+            <summary>
+              Looks up a localized string similar to Failure in getting system input port state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_SI_GETPOWERSOURCETYPE">
+            <summary>
+              Looks up a localized string similar to Failure in getting system input power source type.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.Resource.ERROR_UNREGISTERNOTIFICATION">
+            <summary>
+              Looks up a localized string similar to Failure in unregister for notification.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.Resources.m_rmNameValues">
+            <summary>
+            ResourceManager object to access the string table
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.Resources.#cctor">
+            <summary>
+            Static constructor, initialize access to the string table
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.Resources.GetString(System.String)">
+            <summary>
+            Gets a string from the string table
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Symbol.IO.IO">
+            <summary>
+            The Symbol.IO class provides access to four different IO subclasses:
+            1. IO Digital Inputs (DI)  2. IO Digital Outouts (DO)  3. IO System Inputs (SI)
+            4. IO Analog Inputs (AN)
+            </summary>
+            <example>
+            <code lang="C#">
+            // create IO object
+            IO m_IO = new IO();   
+            
+            // accessing DI port 0
+            DI.Port m_DIPort0 = m_IO.DI.DIPorts[DI.DI_PORT_NUM.DI_PORT_0];
+            
+            // accessing DO port 0
+            DO.Port m_DOPort0 = m_IO.DO.DOPorts[DO.DO_PORT_NUM.DO_PORT_0];
+            
+            // accessing SI port “IGNITION”
+            SI.Port m_SIPortIgnition = m_IO.SI.SIPorts[SI.SI_PORT_NUM.IO_SI_IGNITION];
+            
+            // accessing AN port “AMB TEMP”.
+            AN.Port m_ANPortAmbTemp = m_IO.AN.ANPorts[AN.AN_PORT_NUM.IO_AMB_TEMP];
+            
+            // Add a handler for receieving notification
+            m_IO.PortEventNotify += new IO.PortEventNotifyHandler(m_IO_PortEventNotify);
+            
+            // Enabling event notification for the DI port 0
+            m_DIPort0.NotifyReceipt = true;
+            
+            // Change the state of DO port 0 to OPEN
+            m_DOPort0.PortState = DO.DO_PORT_STATE.PORT_OPEN;
+            
+            // Retrieve the state of SI port “IGNITION”
+            SI.SI_PORT_STATE m_SIPortState = m_SIPortIgnition.PortState;
+            
+            // Retrieve the configuration of AN port “AMB TEMP”
+            AN.PortConfig m_AN_PortConfig = m_ANPortAmbTemp.GetPortConfig();
+            
+            // Set the configuration of AN port “AMB TEMP”
+            AN.PortConfig m_AN_NewPortConfig = new AN.PortConfig(true, 100, 200, 10);
+            m_ANPortAmbTemp.SetPortConfig(m_AN_NewPortConfig);
+            
+            // Retrieve the value of AN port “AMB TEMP”
+            uint value = m_ANPortAmbTemp.PortValue;
+            
+            //Call dispose
+            m_IO.Dispose();
+            </code>
+            
+            <code lang="VB.NET">
+            ' create IO object 
+            Dim m_IO As New IO() 
+            
+            ' accessing DI port 0 
+            Dim m_DIPort0 As DI.Port = m_IO.DI.DIPorts(DI.DI_PORT_NUM.DI_PORT_0) 
+            
+            ' accessing DO port 0 
+            Dim m_DOPort0 As DO.Port = m_IO.DO.DOPorts(DO.DO_PORT_NUM.DO_PORT_0) 
+            
+            ' accessing SI port "IGNITION" 
+            Dim m_SIPortIgnition As SI.Port = m_IO.SI.SIPorts(SI.SI_PORT_NUM.IO_SI_IGNITION) 
+            
+            ' accessing AN port "AMB TEMP". 
+            Dim m_ANPortAmbTemp As AN.Port = m_IO.AN.ANPorts(AN.AN_PORT_NUM.IO_AMB_TEMP) 
+            
+            ' Add a handler for receieving notification 
+            AddHandler m_IO.PortEventNotify, AddressOf m_IO_PortEventNotify 
+            
+            ' Enabling event notification for the DI port 0 
+            m_DIPort0.NotifyReceipt = True 
+            
+            ' Change the state of DO port 0 to OPEN 
+            m_DOPort0.PortState = DO.DO_PORT_STATE.PORT_OPEN 
+            
+            ' Retrieve the state of SI port "IGNITION" 
+            Dim m_SIPortState As SI.SI_PORT_STATE = m_SIPortIgnition.PortState 
+            
+            ' Retrieve the configuration of AN port "AMB TEMP" 
+            Dim m_AN_PortConfig As AN.PortConfig = m_ANPortAmbTemp.GetPortConfig() 
+            
+            ' Set the configuration of AN port "AMB TEMP" 
+            Dim m_AN_NewPortConfig As New AN.PortConfig(True, 100, 200, 10) 
+            m_ANPortAmbTemp.SetPortConfig(m_AN_NewPortConfig) 
+            
+            ' Retrieve the value of AN port "AMB TEMP" 
+            Dim value As UInteger = m_ANPortAmbTemp.PortValue 
+            
+            'Call dispose 
+            m_IO.Dispose() 
+            </code>
+            </example>
+        </member>
+        <member name="M:Symbol.IO.IO.#ctor">
+            <summary>
+            The IO constructor. Creates the DI, DO, SI and AN components of the IO system.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.IO.Dispose">
+            <summary>
+            Disposes all the resourses allocated by this instance.  This method must be called before exiting the
+            application.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.IO.Dispose(System.Boolean)">
+            <summary>
+            Disposes all the resourses allocated by this instance.  This method must be called before exiting the
+            application.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.IO.Finalize">
+            <summary>
+            IO Destructor
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.DI">
+            <summary>
+            Provides access to the DI (Digital Inputs) component of the IO class.
+            <para>DI provides access to 8 general purpose external input ports and allows accessing
+             the individual port configuration and state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.DO">
+            <summary>
+            Provides access to the DO (Digital Outputs) component of the IO class.
+            <para>DO provides access to 8 general purpose external output ports and allows accessing
+             the individual port configuration and state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.SI">
+            <summary>
+            Provides access to the SI (System Inputs) component of the IO class.
+            <para>SI provides the ability to retrieve IO related system information like
+            vehicle ignition state and device power source type. It gives access to 8 ports 
+            and allows accessing the individual port state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.AN">
+            <summary>
+            Provides access to the AN (Analog Inputs) component of the IO class.
+            <para>AN provides access to 8 general purpose external analog ports and allows accessing
+             the individual port configuration and value. 
+            </para>
+            </summary>
+        </member>
+        <member name="E:Symbol.IO.IO.PortEventNotify">
+            <summary>
+            Attach to this notification event to be called back when a predefined IO port event occurs
+            (Error, State Change or Analog value threshold).
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.IO.PortEventNotifyHandler">
+            <summary>
+            Attach to this notification event to be called back when a predefined IO port event occurs
+            (Error, State Change or Analog value threshold).
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="ePortEventArg">Port information such as type and number.</param>
+        </member>
+        <member name="T:Symbol.IO.IO.PortEventNotifyEventArgs">
+            <summary>
+            Port information such as type and number to be passed as an argument in the 
+            PortEventNotifyHandler event notification.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.PortEventNotifyEventArgs.PortInfo">
+            <summary>
+            Port information such as port type and number. 
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.IO.PortEventInfo">
+            <summary>
+            Port information such as port type and number to be passed to the application during the event
+            notification. 
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.PortEventInfo.PortType">
+            <summary>
+            Provdes the port type such as DI, DO, SI and AN
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.IO.PortEventInfo.PortNum">
+            <summary>
+            Provdes the port number of the port as specified in the PortType
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.OperationFailureException">
+            <summary>
+            OperationFailureException is thrown when a failure that could stop the proper 
+            functioning of the class library is encountered.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.OperationFailureException.#ctor(System.String,Symbol.IO.IOResults)">
+            <summary>
+            OperationFailureException constructor with settable string and 
+            results enum.
+            </summary>
+            <param name="sMessage">A string the contains information about
+            the exception.</param>
+            <param name="resResults">A Results enumerated type that contains
+            information about the exception.</param>
+        </member>
+        <member name="P:Symbol.IO.OperationFailureException.Result">
+            <summary>
+            The IOResults associated with the exception.
+            </summary>
+            <value>
+            An integer result that contains information about what caused the
+            exception.
+            </value>
+        </member>
+        <member name="T:Symbol.IO.IOResults">
+            <summary>
+            Defines the possible result codes of the IO assembly. 
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_SUCCESS">
+            <summary>
+            Function succeeded
+            </summary>	
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_ALREADYINITIALIZED">
+            <summary>
+            Failed because already initialized
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_CREATEEVENTFAILED">
+            <summary>
+            Failed to create an event
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_CREATETHREADFAILED">
+            <summary>
+            Failed to create a thread
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_NOTENOUGHMEMORY">
+            <summary>
+            Not enough memory
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_NOTINITIALIZED">
+            <summary>
+            Failed because not initialized
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDDVCCONTEXT">
+            <summary>
+            Invalid Device context
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDOPNCONTEXT">
+            <summary>
+            Invalid open context
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_CANTREADREGVALUE">
+            <summary>
+            Failed to read registry value
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_CANTOPENREGKEY">
+            <summary>
+            Failed to open registry key
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDIOCTRL">
+            <summary>
+            Invalid IO Control parameter
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_NULLPTR">
+            <summary>
+            A NULL pointer error
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_BADSTRUCTINFO">
+            <summary>
+            Bad STRUCT_INFO parameter
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_PARAMMISSING">
+            <summary>
+            Required IoCtl parameter is missing
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_BUFFERTOOSMALL">
+            <summary>
+            Buffer too small
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_MISSINGFIELD">
+            <summary>
+            Missing field
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDHANDLE">
+            <summary>
+            Invalid handle
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDPARAM">
+            <summary>
+            Invalid parameter
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDDEVICENAME">
+            <summary>
+            Invalid device name
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_NOTSUPPORTED">
+            <summary>
+            Not supported
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDCONFIGTYPE">
+            <summary>
+            Invalid Config type
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_EXCEPTION">
+            <summary>
+            An exception occurred
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_WIN32ERROR">
+            <summary>
+            A WIN32 error occurred, check GetLastError()
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_OUTPUTTIMEOUT">
+            <summary>
+            Output timeout
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_WRITECMDFAIL">
+            <summary>
+            Write command failed
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_READCMDFAIL">
+            <summary>
+            Read command failed
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INVALIDTYPE">
+            <summary>
+            Invalid type
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_CREATEOBJECTFAILED">
+            <summary>
+            Create object failed
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_INITOBJECTFAILED">
+            <summary>
+            Initialized object failed
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_SPIERROR">
+            <summary>
+            Error in SPI
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_REQUESTIRQERROR">
+            <summary>
+            Request IRQ error
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.IOResults.E_IO_UNKNOWMPOWERSOURCE">
+            <summary>
+            Unknown power source
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.AN">
+            <summary>
+            Provides access to the AN (Analog Inputs) component of the IO class.
+            <para>AN provides access to 8 analog input ports and allows accessing
+            the individual port configuration and value. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.ANPorts">
+            <summary>
+            Provides access to the analog input ports and allows accessing
+            the individual port configuration and value.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing AN port “AMB TEMP”.
+            AN.Port m_ANPortAmbTemp = m_IO.AN.ANPorts[AN.AN_PORT_NUM.IO_AMB_TEMP];
+            </code>
+            <code lang="VB.NET">
+            ' accessing AN port "AMB TEMP". 
+            Dim m_ANPortAmbTemp As AN.Port = m_IO.AN.ANPorts(AN.AN_PORT_NUM.IO_AMB_TEMP) 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.AN.Ports">
+            <summary>
+            Provides access to the analog input ports and allows accessing
+            the individual port configuration and value.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.Ports.Item(Symbol.IO.AN.AN_PORT_NUM)">
+            <summary>
+            Provides access to the analog input port and allows accessing
+            the port configuration and value.
+            </summary>
+            <param name="portNum">Port number</param>
+            <returns>An object of Port class</returns>
+        </member>
+        <member name="P:Symbol.IO.AN.Ports.Count">
+            <summary>
+            Provides the number of ports supported by the AN class
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.AN.Port">
+            <summary>
+            Provides access to the analog input port and allows accessing
+            the port configuration and value.  Also allows to enable the event notification 
+            for a particular port when the event notification handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.AN.Port.GetPortConfig">
+            <summary>
+            Retrieves the configuration parameters of a port such as Wakeup, MinThresholdVal,
+            MaxThresholdVal and Debounce.
+            </summary>
+            <returns>A PortConfig object which provides the configuration parameters</returns>
+            <example>
+            <code lang="C#">
+            // accessing AN port “AMB TEMP”.
+            AN.Port m_ANPortAmbTemp = m_IO.AN.ANPorts[AN.AN_PORT_NUM.IO_AMB_TEMP];
+            
+            // Retrieve the configuration of AN port “AMB TEMP”
+            AN.PortConfig m_AN_PortConfig = m_ANPortAmbTemp.GetPortConfig();
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing AN port "AMB TEMP". 
+            Dim m_ANPortAmbTemp As AN.Port = m_IO.AN.ANPorts(AN.AN_PORT_NUM.IO_AMB_TEMP) 
+            
+            ' Retrieve the configuration of AN port "AMB TEMP" 
+            Dim m_AN_PortConfig As AN.PortConfig = m_ANPortAmbTemp.GetPortConfig() 
+            </code>
+            </example>
+        </member>
+        <member name="M:Symbol.IO.AN.Port.SetPortConfig(Symbol.IO.AN.PortConfig)">
+            <summary>
+            Sets the configuration parameters of a port such as Wakeup, MinThresholdVal,
+            MaxThresholdVal and Debounce.
+            </summary>
+            <param name="portConfig">A PortConfig object which contains the configuration parameters</param>
+            <example>
+            <code lang="C#">
+            // accessing AN port “AMB TEMP”.
+            AN.Port m_ANPortAmbTemp = m_IO.AN.ANPorts[AN.AN_PORT_NUM.IO_AMB_TEMP];
+            
+            // Set the configuration of AN port “AMB TEMP”
+            AN.PortConfig m_AN_NewPortConfig = new AN.PortConfig(true, 100, 200, 10);
+            m_ANPortAmbTemp.SetPortConfig(m_AN_NewPortConfig);
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing AN port “AMB TEMP”. 
+            Dim m_ANPortAmbTemp As AN.Port = m_IO.AN.ANPorts(AN.AN_PORT_NUM.IO_AMB_TEMP) 
+            
+            ' Set the configuration of AN port “AMB TEMP” 
+            Dim m_AN_NewPortConfig As New AN.PortConfig(True, 100, 200, 10) 
+            m_ANPortAmbTemp.SetPortConfig(m_AN_NewPortConfig) 
+            </code>
+            </example>
+        </member>
+        <member name="P:Symbol.IO.AN.Port.NotifyReceipt">
+            <summary>
+            Enables or disables the event notification for a particular port when the event notification 
+            handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.Port.PortNumber">
+            <summary>
+            Specifies the number of a port
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.Port.PortValue">
+            <summary>
+            Retrieves the value of the port.
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.AN.PortConfig">
+            <summary>
+            Provides access to the configuration parameters of a port such as Wakeup, MinThresholdVal,
+            MaxThresholdVal and Debounce.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.AN.PortConfig.#ctor(System.Boolean,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            PortConfig constructor
+            </summary>
+            <param name="Wakeup">Specify Wakeup port configuration parameter</param>
+            <param name="MinThresholdVal">Specify MinThresholdVal port configuration parameter</param>
+            <param name="MaxThresholdVal">Specify MaxThresholdVal port configuration parameter</param>
+            <param name="Debounce">Specify Debounce port configuration parameter</param>
+        </member>
+        <member name="P:Symbol.IO.AN.PortConfig.Wakeup">
+            <summary>
+            Provides specific analog input port to wake up the device on 
+            change of port state
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.PortConfig.MinThresholdVal">
+            <summary>
+            Define the Minimum threshold of a "notification area".
+            Entering or exiting this area (that is, crossing the minimum/maximum 
+            threshold port value) will generate notification, 
+            provided the event notification is enabled for the particular port.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.PortConfig.MaxThresholdVal">
+            <summary>
+            Define the Maximum threshold of a "notification area".
+            Entering or exiting this area (that is, crossing the minimum/maximum 
+            threshold port value) will generate notification, 
+            provided the event notification is enabled for the particular port.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.AN.PortConfig.Debounce">
+            <summary>
+            Defines the duration the analog input value should remain stable 
+            (within the notification criteria), before the notification event is fired. 
+            Debounce is in 100 milliseconds resolution and can be set to a range of  0 to 63, 
+            hence providing 0 to 6.3 seconds de-bounce time. 
+            (e.g., Debounce equal to 10 provides 1 second Debounce time)
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.AN.AN_PORT_NUM">
+            <summary>
+            Supported analog input ports
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_GP_AN1">
+            <summary>
+            General purpose input voltage
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_GP_AN2">
+            <summary>
+            General purpose input voltage
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_VCAR">
+            <summary>
+            Vehicle battery Voltage
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_ICAR">
+            <summary>
+            Vehicle battery input current
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_SW_IN">
+            <summary>
+            Internal measurement
+            Reserved for system usage
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_RAW_DC">
+            <summary>
+            Internal measurement
+            Reserved for system usage
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_AMB_TEMP">
+            <summary>
+            Ambient temperature
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.AN.AN_PORT_NUM.IO_HTR_TEMP">
+            <summary>
+            Device Internal Heater temperature
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DO">
+            <summary>
+            Provides access to the DO (Digital Outputs) component of the IO class.
+            <para>DO provides access to 8 general purpose external output ports and 
+            allows accessing the individual port configuration and state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DO.DOPorts">
+            <summary>
+            Provides access to the external output ports and allows accessing
+            the individual port configuration and state.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing DO port 0
+            DO.Port m_DOPort0 = m_IO.DO.DOPorts[DO.DO_PORT_NUM.DO_PORT_0];
+            </code>
+            <code lang="VB.NET">
+            ' accessing DO port 0 
+            Dim m_DOPort0 As DO.Port = m_IO.DO.DOPorts(DO.DO_PORT_NUM.DO_PORT_0) 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.DO.Ports">
+            <summary>
+            Provides access to the external output ports and allows accessing
+            the individual port configuration and state.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.DO.Ports.ResetAll">
+            <summary>
+            Resets all ports supported by DO class.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DO.Ports.Item(Symbol.IO.DO.DO_PORT_NUM)">
+            <summary>
+            Provides access to the external output port and allows accessing
+            the port configuration and state.
+            </summary>
+            <param name="portNum">Port number</param>
+            <returns>An object of Port class</returns>
+        </member>
+        <member name="P:Symbol.IO.DO.Ports.Count">
+            <summary>
+            Provides the number of ports supported by the DO class
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DO.Port">
+            <summary>
+            Provides access to the external output port and allows accessing
+            the port configuration and state.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.DO.Port.GetPortConfig">
+            <summary>
+            Retrieves the configuration parameters of a port such as AfterWarmBootState and 
+            AfterColdBootState.
+            </summary>
+            <returns>A PortConfig object which provides the configuration parameters</returns>
+            <example>
+            <code lang="C#">
+            // accessing DO port 0
+            DO.Port m_DOPort0 = m_IO.DO.DOPorts[DO.DO_PORT_NUM.DO_PORT_0];
+            
+            // Retrieve the configuration of DO port 0
+            DO.PortConfig m_DO_PortConfig = m_DOPort0.GetPortConfig();
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DO port 0 
+            Dim m_DOPort0 As DO.Port = m_IO.DO.DOPorts(DO.DO_PORT_NUM.DO_PORT_0) 
+            
+            ' Retrieve the configuration of DO port 0 
+            Dim m_DO_PortConfig As DO.PortConfig = m_DOPort0.GetPortConfig() 
+            </code>
+            </example>
+        </member>
+        <member name="M:Symbol.IO.DO.Port.SetPortConfig(Symbol.IO.DO.PortConfig)">
+            <summary>
+            Sets the configuration parameters of a port such as AfterWarmBootState and 
+            AfterColdBootState.
+            </summary>
+            <param name="portConfig">A PortConfig object which contains the configuration parameters</param>
+            <example>
+            <code lang="C#">
+            // accessing DO port 0
+            DO.Port m_DOPort0 = m_IO.DO.DOPorts[DO.DO_PORT_NUM.DO_PORT_0];
+            
+            // Set the configuration of DO port 0
+            DO.PortConfig m_DO_PortConfig = new DO.PortConfig(DO_BOOT_STATE.PORT_BOOT_STATE_0, DO_BOOT_STATE.PORT_BOOT_STATE_0);
+            m_DOPort0.SetPortConfig(m_DO_PortConfig);
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DO port 0 
+            Dim m_DOPort0 As DO.Port = m_IO.DO.DOPorts(DO.DO_PORT_NUM.DO_PORT_0) 
+            
+            ' Set the configuration of DO port 0 
+            Dim m_DO_PortConfig As New DO.PortConfig(DO_BOOT_STATE.PORT_BOOT_STATE_0, DO_BOOT_STATE.PORT_BOOT_STATE_0) 
+            m_DOPort0.SetPortConfig(m_DO_PortConfig) 
+            </code>
+            </example>
+        </member>
+        <member name="P:Symbol.IO.DO.Port.PortNumber">
+            <summary>
+            Specifies the number of a port
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DO.Port.PortState">
+            <summary>
+            Retrieves or changes the status of the port.
+            </summary>
+            <example>
+            <code lang="C#">
+             // accessing DO port 0
+            DO.Port m_DOPort0 = m_IO.DO.DOPorts[DO.DO_PORT_NUM.DO_PORT_0];
+            
+            // Retrieve the state of DO port 0
+            DO.DO_PORT_STATE m_DOPortState = m_DOPort0.PortState;
+            
+            // Changing the state of DO port 0
+            m_DOPort0.PortState = DO.DO_PORT_STATE.PORT_OPEN;
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DO port 0 
+            Dim m_DOPort0 As DO.Port = m_IO.DO.DOPorts(DO.DO_PORT_NUM.DO_PORT_0) 
+            
+            ' Retrieve the state of DO port 0 
+            Dim m_DOPortState As DO.DO_PORT_STATE = m_DOPort0.PortState 
+            
+            ' Changing the state of DO port 0 
+            m_DOPort0.PortState = DO.DO_PORT_STATE.PORT_OPEN 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.DO.PortConfig">
+            <summary>
+            Provides access to the configuration parameters of a port such as AfterWarmBootState and 
+            AfterColdBootState.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.DO.PortConfig.#ctor(Symbol.IO.DO_BOOT_STATE,Symbol.IO.DO_BOOT_STATE)">
+            <summary>
+            PortConfig constructor.
+            </summary>
+            <param name="AfterWarmBootState">Specify AfterWarmBootState port configuration parameter</param>
+            <param name="AfterColdBootState">Specify AfterColdBootState port configuration parameter</param>
+        </member>
+        <member name="P:Symbol.IO.DO.PortConfig.AfterWarmBootState">
+            <summary>
+            Provides the state of the port after device warm Boot 
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DO.PortConfig.AfterColdBootState">
+            <summary>
+            Provides the state of the port after device cold Boot 
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DO.DO_PORT_NUM">
+            <summary>
+            Supported digital output ports
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_0">
+            <summary>
+            Digital output port 0
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_1">
+            <summary>
+            Digital output port 1
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_2">
+            <summary>
+            Digital output port 2
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_3">
+            <summary>
+            Digital output port 3
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_4">
+            <summary>
+            Digital output port 4
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_5">
+            <summary>
+            Digital output port 5
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_6">
+            <summary>
+            Digital output port 6
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_NUM.DO_PORT_7">
+            <summary>
+            Digital output port 7
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DO.DO_PORT_STATE">
+            <summary>
+            Different states of the DO port.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_STATE.PORT_CLOSE">
+            <summary>
+            Port is closed.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO.DO_PORT_STATE.PORT_OPEN">
+            <summary>
+            Port is open.
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.PORT_TYPE">
+            <summary>
+            Types of IO ports
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.PORT_TYPE.IO_DIGITAL_INPUT">
+            <summary>
+            Digital Input
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.PORT_TYPE.IO_DIGITAL_OUTPUT">
+            <summary>
+            Digital Output
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.PORT_TYPE.IO_ANALOG_INPUT">
+            <summary>
+            Analog Input
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.PORT_TYPE.IO_SYSTEM_INPUT">
+            <summary>
+            System Input
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DO_BOOT_STATE">
+            <summary>
+            Defines digital output port boot configuration
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO_BOOT_STATE.PORT_BOOT_STATE_0">
+            <summary>
+            Force '0' on the Digital output port after device boot
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO_BOOT_STATE.PORT_BOOT_STATE_1">
+            <summary>
+            Force '1' on the Digital output port after device boot
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DO_BOOT_STATE.PORT_BOOT_STATE_RESTORE">
+            <summary>
+            Restore the Digital output state as it was before the device boot
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.SI">
+            <summary>
+            Provides access to the SI (System Inputs) component of the IO class.
+            <para>SI provides the ability to retrieve IO related system information like
+            vehicle ignition state and device power source type. It gives access to 8 ports 
+            and allows accessing the individual port state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.SIPorts">
+            <summary>
+            Provides access to the system input ports and allows accessing
+            the individual port state.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing SI port “IGNITION”
+            SI.Port m_SIPortIgnition = m_IO.SI.SIPorts[SI.SI_PORT_NUM.IO_SI_IGNITION];
+            </code>
+            <code lang="VB.NET">
+            ' accessing SI port "IGNITION" 
+            Dim m_SIPortIgnition As SI.Port = m_IO.SI.SIPorts(SI.SI_PORT_NUM.IO_SI_IGNITION) 
+            </code>
+            </example>
+        </member>
+        <member name="P:Symbol.IO.SI.IgnitionState">
+            <summary>
+            Retrives the vehicle's current ignition state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.PowerSourceType">
+            <summary>
+            Retrieves the power source type that is currently feeding the device.
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.SI.Ports">
+            <summary>
+            Provides access to the system input ports and allows accessing
+            the individual port state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.Ports.Item(Symbol.IO.SI.SI_PORT_NUM)">
+            <summary>
+            Provides access to the system input port and allows accessing
+            the port state.
+            </summary>
+            <param name="portNum">Port number</param>
+            <returns>An object of Port class</returns>
+        </member>
+        <member name="P:Symbol.IO.SI.Ports.Count">
+            <summary>
+            Provides the number of ports supported by the SI class
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.SI.Port">
+            <summary>
+            Provides access to the system input port and allows accessing the port state.
+            Also allows to enable the event notification for a particular port when the 
+            event notification handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.Port.NotifyReceipt">
+            <summary>
+            Enables or disables the event notification for a particular port when the event notification 
+            handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.Port.PortNumber">
+            <summary>
+            Specifies the number of a port
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.SI.Port.PortState">
+            <summary>
+            Specifies the status of the port.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing SI port “IGNITION”
+            SI.Port m_SIPortIgnition = m_IO.SI.SIPorts[SI.SI_PORT_NUM.IO_SI_IGNITION];
+            
+            // Retrieve the state of SI port “IGNITION”
+            SI.SI_PORT_STATE m_SIPortState = m_SIPortIgnition.PortState;
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing SI port "IGNITION" 
+            Dim m_SIPortIgnition As SI.Port = m_IO.SI.SIPorts(SI.SI_PORT_NUM.IO_SI_IGNITION) 
+            
+            ' Retrieve the state of SI port "IGNITION" 
+            Dim m_SIPortState As SI.SI_PORT_STATE = m_SIPortIgnition.PortState 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.SI.SI_PORT_NUM">
+            <summary>
+            Supported system input ports
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_IGNITION">
+            <summary>
+            System input port for ingnition
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_BAT_DOOR">
+            <summary>
+            System input port for battery door
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_SIM_DOOR">
+            <summary>
+            System input port for SIM door
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_SIM_HEATER">
+            <summary>
+            System input port for SIM heater
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_SIM_RESERVED1">
+            <summary>
+            System input reserved port
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_SIM_RESERVED2">
+            <summary>
+            System input reserved port
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_POWER_SRC_1">
+            <summary>
+            System input port for power source 1
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_NUM.IO_SI_POWER_SRC_2">
+            <summary>
+            System input port for power source 2
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.SI.SI_PORT_STATE">
+            <summary>
+            Different states of the SI port.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_STATE.PORT_ON">
+            <summary>
+            Port state is ON.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI.SI_PORT_STATE.PORT_OFF">
+            <summary>
+            Port state is OFF.
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.SI_POWER_SOURCE_TYPE">
+            <summary>
+            Supported power source types for the device
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI_POWER_SOURCE_TYPE.IO_SI_CAR_BATTERY_POWER">
+            <summary>
+            Car battery power source
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI_POWER_SOURCE_TYPE.IO_SI_WALL_ADAPTER_POWER">
+            <summary>
+            Wall adapter power source
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.SI_POWER_SOURCE_TYPE.IO_SI_CIGARETTE_LIGHTER_POWER">
+            <summary>
+            Cigarette lighter power source
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DI">
+            <summary>
+            Provides access to the DI (Digital Inputs) component of the IO class.
+            <para>DI provides access to 8 general purpose external input ports and allows accessing
+             the individual port configuration and state. 
+            </para>
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DI.DIPorts">
+            <summary>
+            Provides access to the external input ports and allows accessing
+             the individual port configuration and state.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing DI port 0
+            DI.Port m_DIPort0 = m_IO.DI.DIPorts[DI.DI_PORT_NUM.DI_PORT_0];
+            </code>
+            <code lang="VB.NET">
+            ' accessing DI port 0 
+            Dim m_DIPort0 As DI.Port = m_IO.DI.DIPorts(DI.DI_PORT_NUM.DI_PORT_0) 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.DI.Ports">
+            <summary>
+            Provides access to the external input ports and allows accessing
+            the individual port configuration and state.
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DI.Ports.Item(Symbol.IO.DI.DI_PORT_NUM)">
+            <summary>
+            Provides access to the external input port and allows accessing
+            the port configuration and state.
+            </summary>
+            <param name="portNum">Port number</param>
+            <returns>An object of Port class</returns>
+        </member>
+        <member name="P:Symbol.IO.DI.Ports.Count">
+            <summary>
+            Provides the number of ports supported by the DI class
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DI.Port">
+            <summary>
+            Provides access to the external input port and allows accessing
+            the port configuration and state.  Also allows to enable the event notification 
+            for a particular port when the event notification handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.DI.Port.GetPortConfig">
+            <summary>
+            Retrieves the configuration parameters of a port such as WakeupState and 
+            SwitchBatteryGround.
+            </summary>
+            <returns>A PortConfig object which provides the configuration parameters</returns>
+            <example>
+            <code lang="C#">
+            // accessing DI port 0
+            DI.Port m_DIPort0 = m_IO.DI.DIPorts[DI.DI_PORT_NUM.DI_PORT_0];
+            
+            // Retrieve the configuration of DI port 0
+            DI.PortConfig m_DI_PortConfig = m_DIPort0.GetPortConfig();
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DI port 0 
+            Dim m_DIPort0 As DI.Port = m_IO.DI.DIPorts(DI.DI_PORT_NUM.DI_PORT_0) 
+            
+            ' Retrieve the configuration of DI port 0 
+            Dim m_DI_PortConfig As DI.PortConfig = m_DIPort0.GetPortConfig() 
+            </code>
+            </example>
+        </member>
+        <member name="M:Symbol.IO.DI.Port.SetPortConfig(Symbol.IO.DI.PortConfig)">
+            <summary>
+            Sets the configuration parameters of a port such as WakeupState and 
+            SwitchBatteryGround.
+            </summary>
+            <param name="portConfig">A PortConfig object which contains the configuration parameters</param>
+            <example>
+            <code lang="C#">
+            // accessing DI port 0
+            DI.Port m_DIPort0 = m_IO.DI.DIPorts[DI.DI_PORT_NUM.DI_PORT_0];
+            
+            // Set the configuration of DI port 0
+            DI.PortConfig m_DI_PortConfig = new DI.PortConfig(1, 0);
+            m_DIPort0.SetPortConfig(m_DI_PortConfig);
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DI port 0 
+            Dim m_DIPort0 As DI.Port = m_IO.DI.DIPorts(DI.DI_PORT_NUM.DI_PORT_0) 
+            
+            ' Set the configuration of DI port 0 
+            Dim m_DI_PortConfig As New DI.PortConfig(1, 0) 
+            m_DIPort0.SetPortConfig(m_DI_PortConfig) 
+            </code>
+            </example>
+        </member>
+        <member name="P:Symbol.IO.DI.Port.NotifyReceipt">
+            <summary>
+            Enables or disables the event notification for a particular port when the event notification 
+            handler is attached in the IO class
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DI.Port.PortNumber">
+            <summary>
+            Specifies the number of a port
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DI.Port.PortState">
+            <summary>
+            Specifies the status of the port.
+            </summary>
+            <example>
+            <code lang="C#">
+            // accessing DI port 0
+            DI.Port m_DIPort0 = m_IO.DI.DIPorts[DI.DI_PORT_NUM.DI_PORT_0];
+            
+            // Retrieve the state of DI port 0
+            DI.DI_PORT_STATE m_DIPortState = m_DIPort0.PortState;
+            </code>
+            
+            <code lang="VB.NET">
+            ' accessing DI port 0 
+            Dim m_DIPort0 As DI.Port = m_IO.DI.DIPorts(DI.DI_PORT_NUM.DI_PORT_0) 
+            
+            ' Retrieve the state of DI port 0 
+            Dim m_DIPortState As DI.DI_PORT_STATE = m_DIPort0.PortState 
+            </code>
+            </example>
+        </member>
+        <member name="T:Symbol.IO.DI.PortConfig">
+            <summary>
+            Provides access to the configuration parameters of a port such as WakeupState and 
+            SwitchBatteryGround.
+            </summary>
+        </member>
+        <member name="M:Symbol.IO.DI.PortConfig.#ctor(System.UInt32,System.UInt32)">
+            <summary>
+            PortConfig Constructor.
+            </summary>
+            <param name="WakeupState">Specify WakeupState port configuration parameter</param>
+            <param name="SwitchBatteryGround">Specify SwitchBatteryGround port configuration parameter</param>
+        </member>
+        <member name="P:Symbol.IO.DI.PortConfig.WakeupState">
+            <summary>
+            Provides specific digital input port to wake up the device on 
+            change of port State
+            </summary>
+        </member>
+        <member name="P:Symbol.IO.DI.PortConfig.SwitchBatteryGround">
+            <summary>
+            Provides program specific digital input port to read switch-to-ground 
+            or switch-to-battery contacts.
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DI.DI_PORT_NUM">
+            <summary>
+            Supported digital input ports
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_0">
+            <summary>
+            Digital input port 0
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_1">
+            <summary>
+            Digital input port 1
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_2">
+            <summary>
+            Digital input port 2
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_3">
+            <summary>
+            Digital input port 3
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_4">
+            <summary>
+            Digital input port 4
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_5">
+            <summary>
+            Digital input port 5
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_6">
+            <summary>
+            Digital input port 6
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_NUM.DI_PORT_7">
+            <summary>
+            Digital input port 7
+            </summary>
+        </member>
+        <member name="T:Symbol.IO.DI.DI_PORT_STATE">
+            <summary>
+            Different states of the DI port.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_STATE.PORT_CLOSE">
+            <summary>
+            Port is closed.
+            </summary>
+        </member>
+        <member name="F:Symbol.IO.DI.DI_PORT_STATE.PORT_OPEN">
+            <summary>
+            Port is open.
+            </summary>
+        </member>
+    </members>
+</doc>

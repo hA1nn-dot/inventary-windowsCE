@@ -1,0 +1,1 @@
+COPY Application\"Inventario fisico"\"Inventario Físico.lnk" \Windows\Desktop\"Inventario Físico.lnk"

@@ -1,0 +1,16 @@
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\prueba.Form1.resources
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\prueba.Properties.Resources.resources
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\prueba.csproj.GenerateResource.Cache
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\SQLite.Interop.066.DLL
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\SQLite.Interop.066.exp
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\SQLite.Interop.066.lib
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\Inventario Físico.exe
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\Inventario Físico.pdb
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\System.Data.SqlClient.dll
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\System.Data.SQLite.dll
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\Inventario Físico.exe
+C:\Users\hgq_2\Desktop\prueba\prueba\obj\Debug\Inventario Físico.pdb
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\dbnetlib.dll
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\Symbol.IO.dll
+C:\Users\hgq_2\Desktop\prueba\prueba\bin\Debug\Symbol.IO.xml

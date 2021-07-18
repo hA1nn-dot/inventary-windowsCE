@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <app id="1">
+    <server>192.168.1.85</server>
+    <database>OLIN CE</database>
+    <user>sa</user>
+    <password>123</password>
+    <estatus>activo</estatus>
+  </app>
+</configuration>
