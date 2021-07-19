@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="LiteDB.cs" />
     <Compile Include="MainDB.cs" />
+    <Compile Include="Product.cs" />
     <Compile Include="Program.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

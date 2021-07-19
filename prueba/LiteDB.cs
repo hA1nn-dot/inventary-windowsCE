@@ -175,7 +175,7 @@ namespace prueba
             string id_producto = "0";
             string id_ubicacion = getID_ubicacion();
             string id_unidad = "0";
-            string fecha_cap = fecha;
+            string fecha_cap = fecha.Replace("/", "-");
             string query;
             if (unidad != "")
             {

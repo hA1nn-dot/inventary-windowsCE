@@ -292,7 +292,7 @@ namespace prueba
             return encontrado;
         }
 
-        public void attemptSendProductsToServer(List<Product> listaProductos,string conteo,string usuario) 
+        public void attemptSendProductsToServer(List<Product> listaProductos,string conteo,string usuario)
         {
             string commandString = "";
             int conteoActual = 0;               //Cantidad ConteoActual

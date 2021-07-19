@@ -365,10 +365,10 @@ namespace prueba
             string codigo = barcode.Text.Trim();
             if (File.Exists(rutaSQLite))
             {
-                if (lector_database.VerifyCodesLiteDB(codigo))
+                if (lector_database.VerifyCodesLiteDB(codigo))      // Si el codigo esta en los registros
                     guardarDatos(false);
                 else
-                    guardarDatos(true);
+                    guardarDatos(true);                             
             }
             else {
                 MessageBox.Show("No ha iniciado sesión en este lector", "Inicia Sesión", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
@@ -622,7 +622,9 @@ namespace prueba
                 try
                 {
                     string conteo = conteoComboBox.SelectedItem.ToString();
-                    lector_database.download_ValuesLocalDB(database, conteo);       //Envia el conteo a SQLserver
+                    string usuario = userTxtBox.Text.ToString();
+                    List<Product> listaProductos = lector_database.getProductsList();
+                    database.attemptSendProductsToServer(listaProductos, conteo, usuario);
                     sesion = false;
                 }catch (InvalidOperationException ex2) {
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x "+ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
@@ -631,13 +633,11 @@ namespace prueba
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 124x " + exq.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
                 }
-                catch (SqlException sql)
-                {
+                catch (SqlException sql){
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 1288x " + sql.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex){
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo." + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
                 }
