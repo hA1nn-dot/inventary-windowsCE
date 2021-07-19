@@ -292,37 +292,47 @@ namespace prueba
             return encontrado;
         }
 
-        public void _insertValues_MainDB(string fecha_cap, string id_producto, string id_unidad, string cantidad, string usuario, string id_ubicacion, string conteo) 
+        public void attemptSendProductsToServer(List<Product> listaProductos,string conteo,string usuario) 
         {
             string commandString = "";
-            string conteoActual = "";               //Cantidad ConteoActual
+            int conteoActual = 0;               //Cantidad ConteoActual
             int conteoActualizado = 0;              //Total del Conteo
-            fecha_cap = fecha_cap.Replace("/","-");
-            try {
-                if (conteo == "Conteo 1") 
+
+            foreach (Product producto in listaProductos) {
+                int id_producto = producto.productoID;
+                int id_unidad = producto.unidadID;
+                int id_ubicacion = producto.ubicacionID;
+                int cantidad = producto.cantidad;
+                string fecha_cap = producto.fecha.Replace("/", "-");
+
+                try
                 {
-                    conteoActual = getConteoActual("CONTEO1",id_producto, id_unidad, fecha_cap, id_ubicacion);
-                    conteoActualizado = int.Parse(conteoActual) + int.Parse(cantidad);
+                    if (conteo == "Conteo 1")
+                    {
+                        conteoActual = getConteoActual("CONTEO1", producto);
+                        conteoActualizado = conteoActual + cantidad;
 
-                    string diferencia = getDiferencia(conteoActualizado.ToString(), id_producto,id_unidad,fecha_cap,id_ubicacion);
-                    commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO1 = {0}, USUARIO1 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia,fecha_cap,id_unidad, id_ubicacion);
+                        int diferencia = getDiferencia(conteoActualizado, producto);
+                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO1 = {0}, USUARIO1 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
+                    }
+                    else if (conteo == "Conteo 2")
+                    {
+                        conteoActual = getConteoActual("CONTEO2", producto);
+                        conteoActualizado = conteoActual + cantidad;
+
+                        int diferencia = getDiferencia(conteoActualizado, producto);
+                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO2 = {0}, USUARIO2 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
+                    }
+
                 }
-                else if (conteo == "Conteo 2") 
+                catch (SqlException ex)
                 {
-                    conteoActual = getConteoActual("CONTEO2", id_producto, id_unidad,fecha_cap, id_ubicacion);
-                    conteoActualizado = int.Parse(conteoActual) + int.Parse(cantidad);
-
-                    string diferencia = getDiferencia(cantidad, id_producto,id_unidad,fecha_cap, id_ubicacion);
-                    commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO2 = {0}, USUARIO2 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia,fecha_cap, id_unidad, id_ubicacion);
+                    throw ex;
                 }
-
-            }
-            catch (SqlException ex)
-            {
-                throw ex;
             }
 
-          
+            
+
             try
             {
                 this.connectDB();
@@ -336,19 +346,17 @@ namespace prueba
             }
         }
 
-        string getConteoActual(string CONTEO_N, string id_producto,string id_unidad, string fecha, string id_ubicacion) 
+        private int getConteoActual(string CONTEO_N, Product producto)
         {
-            string cantidadActual = "0";
-            string commandString = string.Format("SELECT {0} FROM CONTEOS_IF where PRODUCTO = {1} AND UNIDAD = {2} AND FECHA = '{3}' AND UBICACION = {4}",CONTEO_N, id_producto, id_unidad, fecha, id_ubicacion);
+            int cantidadActual = 0;
+            string commandString = string.Format("SELECT {0} FROM CONTEOS_IF where PRODUCTO = {1} AND UNIDAD = {2} AND FECHA = '{3}' AND UBICACION = {4}",CONTEO_N, producto.productoID, producto.unidadID, producto.fecha.Replace("/", "-"), producto.ubicacionID);
             try
             {
                 this.connectDB();
                 cmd = new SqlCommand(commandString, connection);
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
-                {
-                    cantidadActual = reader[0].ToString();
-                }
+                    cantidadActual = int.Parse(reader[0].ToString());
                 reader.Close();
                 this.connection.Close();
             }
@@ -359,10 +367,11 @@ namespace prueba
             return cantidadActual;
         }
 
-        string getDiferencia(string cantidad, string id_producto, string id_unidad, string fecha, string id_ubicacion) {
+        private int getDiferencia(int conteoActualizado, Product producto)
+        {
             int diferencia = 0;
             int existencia = 0;
-            string commandString = string.Format("SELECT EXISTENCIA FROM CONTEOS_IF where PRODUCTO = {0} AND UNIDAD = {1} AND FECHA = '{2}' AND UBICACION = {3}", id_producto, id_unidad, fecha, id_ubicacion);
+            string commandString = string.Format("SELECT EXISTENCIA FROM CONTEOS_IF where PRODUCTO = {0} AND UNIDAD = {1} AND FECHA = '{2}' AND UBICACION = {3}",producto.productoID, producto.unidadID, producto.fecha.Replace("/", "-"), producto.ubicacionID);
             try
             {
                 this.connectDB();
@@ -371,7 +380,7 @@ namespace prueba
                 if (reader.Read())
                 {
                     existencia = int.Parse(reader[0].ToString());
-                    diferencia = int.Parse(cantidad) - existencia;
+                    diferencia = conteoActualizado - existencia;
                 }
                 reader.Close();
                 this.connection.Close();
@@ -383,7 +392,7 @@ namespace prueba
             catch(InvalidCastException e_cast){
                 throw e_cast;
             }
-            return diferencia.ToString();
+            return diferencia;
         }
 
     }
