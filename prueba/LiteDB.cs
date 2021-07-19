@@ -667,51 +667,46 @@ namespace prueba
         
         }
 
-        public void download_ValuesLocalDB(MainDB SQLServer, string conteo)
-        {
+        public List<Product> getProductsList(){
+            List<Product> listaProductos = new List<Product>();
             string query = "SELECT * FROM codigos";
-
-            string fecha = string.Empty;
-            string id_producto = string.Empty;
-            string id_unidad = string.Empty;
-            string cantidad = string.Empty;
-            string usuario = getUsuario();
-            string id_ubicacion = string.Empty;
             try
             {
-                this.connection.Open();
+                if (connection.State != System.Data.ConnectionState.Open) this.connection.Open();
                 cmd = new SQLiteCommand(query, this.connection);
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    cantidad = reader[2].ToString();
-                    fecha = reader[3].ToString();
-                    id_producto = reader[4].ToString();
-                    id_ubicacion = reader[5].ToString();
-                    id_unidad = reader[6].ToString();
+                    Product producto = new Product();
 
-                    SQLServer._insertValues_MainDB(fecha, id_producto, id_unidad, cantidad, usuario, id_ubicacion, conteo);
+                    producto.productoID = int.Parse(reader[4].ToString());
+                    producto.unidadID = int.Parse(reader[6].ToString());
+                    producto.cantidad = int.Parse(reader[2].ToString());
+                    producto.ubicacionID = int.Parse(reader[5].ToString());
+                    producto.fecha = reader[3].ToString();
+                    
+                    listaProductos.Add(producto);
+                    //SQLServer._insertValues_MainDB(fecha, id_producto, id_unidad, cantidad, usuario, id_ubicacion, conteo);
                 }
-                MessageBox.Show("DATOS ENVIADOS");
                 reader.Close();
                 cmd.Dispose();
-                this.connection.Close();
+                connection.Close();
+                return listaProductos;
             }
-            catch (SQLiteException ex)
+            catch (SQLiteException SQliteError)
             {
-                throw ex;
+                throw SQliteError;
             }
-            catch (SqlException exp)
+            catch (InvalidOperationException invalidError) 
             {
-                throw exp;
+                throw invalidError;
             }
-            catch (InvalidOperationException imp) 
-            {
-                throw imp;
+            catch(NullReferenceException nullError){
+                throw nullError;
             }
-            catch (Exception pas)
+            catch (Exception generalError)
             {
-                throw pas;
+                throw generalError;
             }
         }
 
