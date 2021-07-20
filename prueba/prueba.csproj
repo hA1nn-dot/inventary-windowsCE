@@ -92,6 +92,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="SQLiteFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLite.Interop.066.DLL">
