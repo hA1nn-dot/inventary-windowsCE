@@ -6,7 +6,6 @@
         /// Variable del diseñador requerida.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.MainMenu mainMenu1;
 
         /// <summary>
         /// Limpiar los recursos que se estén usando.
@@ -30,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.mainMenu1 = new System.Windows.Forms.MainMenu();
             this.Datos = new System.Windows.Forms.TabPage();
             this.dataPanel = new System.Windows.Forms.Panel();
             this.numLector = new System.Windows.Forms.Label();
@@ -399,7 +397,6 @@
             this.ForeColor = System.Drawing.SystemColors.Control;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Menu = this.mainMenu1;
             this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "Inventario";
