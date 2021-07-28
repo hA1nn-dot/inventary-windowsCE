@@ -135,7 +135,30 @@ namespace prueba
             {
                 MessageBox.Show("Error al validar registros en SQLite: "+ex.Message);
             }
-            return encontrado;              //
+            return encontrado;
+        }
+
+        public int countCodesTable() //true = hay usuario // false = 
+        {
+            int rows = 0;
+            string query = string.Format("SELECT * FROM codigos");
+            try
+            {
+                this.connectLiteDB();
+                cmd = new SQLiteCommand(query, connection);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    rows++;
+                }
+                reader.Close();
+                this.connection.Close();
+            }
+            catch (SQLiteException ex)
+            {
+                throw ex;
+            }
+            return rows;
         }
 
 

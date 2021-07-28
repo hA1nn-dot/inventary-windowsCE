@@ -10,12 +10,12 @@ using System.Data.SQLite;
 using System.IO;
 using System.Configuration;
 using System.Data.SqlClient;
-
+using System.Threading;
 namespace prueba
 {
     public partial class Form1 : Form
     {
-        
+        private Thread loadProductsThread;
         private List<string> codesList = new List<string>();
         private List<string> codesServerList = new List<string>();
         private List<string> almacenes = new List<string>();
@@ -295,12 +295,13 @@ namespace prueba
         //Llenado de ComboBox almacenes
         private void getAlmacen() 
         {
-                almacenComboBox.DataSource = null;          //limpiando Comboboxes
-                almacenComboBox.Items.Clear();
-                ubicacionComboBox.DataSource = null;
-                ubicacionComboBox.Items.Clear();
+            almacenComboBox.DataSource = null;          //limpiando Comboboxes
+            almacenComboBox.Items.Clear();
+            ubicacionComboBox.DataSource = null;
+            ubicacionComboBox.Items.Clear();
 
-                database.getAlmacenes(almacenComboBox);     //llenar el combo de almacenes
+            database.getAlmacenes(almacenComboBox);     //llenar el combo de almacenes
+            almacenComboBox.SelectedIndex = 0;
         }
 
         //Cerrando sesión
@@ -544,11 +545,58 @@ namespace prueba
 
         void SQLServer_to_SQLite(string almacenSeleccionado, string ubicacionSeleccionado, string conteoSeleccionado, string fechaSeleccionada) 
         {
-            update_InterfaceView(false);
-            this.almacen = database.getIdAlmacen(almacenSeleccionado);
-            this.ubicacion = database.getIdUbicacion(this.almacen, ubicacionSeleccionado);
+            List<int> listIDUbication = new List<int>();
+            try
+            {
 
-            if (database._loadProductsToSQLite(ubicacion, lector_database,fechaSeleccionada))
+                update_InterfaceView(false);
+                this.almacen = database.getIdAlmacen(almacenSeleccionado);
+                /*if (ubicacionSeleccionado == "Todas las áreas") //Haim
+                    listIDUbication = MainDB.getListIDUbicationFromServer(almacenSeleccionado);
+                else*/
+                    this.ubicacion = database.getIdUbicacion(this.almacen, ubicacionSeleccionado);
+
+                loadProductsThread = new Thread(() =>
+                {
+                    try
+                    {
+                        MessageBox.Show("Cargando productos, por favor espere...");
+                        database._loadProductsToSQLite(ubicacion, lector_database, fechaSeleccionada);
+                        MessageBox.Show("Productos cargados existosamente...");
+                        sesion = true;
+                        if (lector_database.countRegistros("personal") == 0)
+                            lector_database._loadUsuario(nombre_usuario, almacenSeleccionado, ubicacionSeleccionado, conteoSeleccionado, fechaSeleccionada);
+                    }
+                    catch (SqlException sqlError)
+                    {
+                        throw sqlError;
+                    }
+                    catch (Exception exc) {
+                        throw exc;
+                    }
+                    
+                });
+                loadProductsThread.Start();
+                btnCloseSession.Enabled = true;
+                sendData.Enabled = true;
+            }
+            catch (SqlException exc)
+            {
+                MessageBox.Show("Error de red: " + exc.Message.ToString());
+                _borrarSQLite();
+                clean_ComboBoxesInterface();
+                update_InterfaceView(true);
+            }
+            catch (Exception exc2)
+            {
+                MessageBox.Show("Error general" + exc2.Message.ToString());
+                _borrarSQLite();
+                clean_ComboBoxesInterface();
+                update_InterfaceView(true);
+            }
+            
+
+            /*if (database._loadProductsToSQLite(ubicacion, lector_database,fechaSeleccionada))
             {
                 actualizarNum_productos();
                 sesion = true;
@@ -564,7 +612,7 @@ namespace prueba
                 return;
             }
             btnCloseSession.Enabled = true;
-            sendData.Enabled = true;
+            sendData.Enabled = true;*/
         }
 
         private void updateMainTable_Click(object sender, EventArgs e)
@@ -581,8 +629,14 @@ namespace prueba
             {
                 if (almacenComboBox.SelectedItem.ToString() != "")
                 {
-                    if (ubicacionComboBox.Enabled && sesion == false)
-                        database.getUbicaciones(ubicacionComboBox, almacenComboBox.SelectedItem.ToString());
+                    if (ubicacionComboBox.Enabled && sesion == false) {
+                        if (almacenComboBox.SelectedItem.ToString() == "B4 RIO VERDE") {
+                            ubicacionComboBox.Items.Add("Todas las áreas");
+                        }else
+                            database.getUbicaciones(ubicacionComboBox, almacenComboBox.SelectedItem.ToString());
+                        ubicacionComboBox.SelectedIndex = 0;
+                    }
+                        
                 }
             }
             catch (SqlException sqlException)
@@ -591,6 +645,9 @@ namespace prueba
             }
             catch (NullReferenceException null_exc) {
                 MessageBox.Show("Seleccione un almacen", "Error almacen", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            }catch(Exception erroeComboBoxes){
+                MessageBox.Show("Error de carga: No se han cargado los datos correspondientes, vuelva a cargar","Error de carga");
+                loadLogin();
             }
             
                
@@ -617,13 +674,20 @@ namespace prueba
 
         //Función para descargar los registros del lector SQLite -> SQLserver
         private void _envioRegistros() {
-            if (lector_database.countRegistros("codigos") != 0)
-            {
+            
                 try
                 {
                     string conteo = conteoComboBox.SelectedItem.ToString();
-                    lector_database.download_ValuesLocalDB(database, conteo);       //Envia el conteo a SQLserver
+                     
+                    lector_database.download_ValuesLocalDB(database, conteo);
                     sesion = false;
+                    _borrarSQLite();
+                        
+                    clean_ComboBoxesInterface();
+                    actualizarNum_productos();
+                    update_ProductosLector();
+                    getAlmacen();
+                    update_InterfaceView(true);
                 }catch (InvalidOperationException ex2) {
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x "+ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
@@ -641,18 +705,6 @@ namespace prueba
                     MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo." + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
                 }
-
-                _borrarSQLite();
-                update_InterfaceView(true);
-
-                clean_ComboBoxesInterface();
-                getAlmacen();
-
-                update_ProductosLector();
-                actualizarNum_productos();
-            }
-            else
-                MessageBox.Show("No hay codigos leidos.", "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
         }
 
         private void unidadComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -734,6 +786,12 @@ namespace prueba
         private void barcode_KeyDown(object sender, KeyEventArgs e)
         {
             
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            actualizarNum_productos();
+            update_ProductosLector();
         }
     }
 }

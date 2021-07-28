@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Datos = new System.Windows.Forms.TabPage();
             this.dataPanel = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.numLector = new System.Windows.Forms.Label();
             this.Numregistro = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -76,14 +77,15 @@
             this.Datos.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.Datos.Controls.Add(this.dataPanel);
             this.Datos.Controls.Add(this.loginPanel);
-            this.Datos.Location = new System.Drawing.Point(4, 25);
+            this.Datos.Location = new System.Drawing.Point(4, 26);
             this.Datos.Name = "Datos";
-            this.Datos.Size = new System.Drawing.Size(229, 213);
+            this.Datos.Size = new System.Drawing.Size(229, 237);
             this.Datos.Text = "Login";
             // 
             // dataPanel
             // 
             this.dataPanel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.dataPanel.Controls.Add(this.button1);
             this.dataPanel.Controls.Add(this.numLector);
             this.dataPanel.Controls.Add(this.Numregistro);
             this.dataPanel.Controls.Add(this.label8);
@@ -100,19 +102,35 @@
             this.dataPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataPanel.Location = new System.Drawing.Point(0, 0);
             this.dataPanel.Name = "dataPanel";
-            this.dataPanel.Size = new System.Drawing.Size(229, 213);
+            this.dataPanel.Size = new System.Drawing.Size(229, 237);
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular);
+            this.button1.Location = new System.Drawing.Point(5, 210);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 25);
+            this.button1.TabIndex = 18;
+            this.button1.Text = "Actualizar ";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // numLector
             // 
-            this.numLector.Location = new System.Drawing.Point(126, 157);
+            this.numLector.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
+            this.numLector.ForeColor = System.Drawing.Color.DarkRed;
+            this.numLector.Location = new System.Drawing.Point(5, 180);
             this.numLector.Name = "numLector";
-            this.numLector.Size = new System.Drawing.Size(100, 20);
+            this.numLector.Size = new System.Drawing.Size(115, 20);
+            this.numLector.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Numregistro
             // 
-            this.Numregistro.Location = new System.Drawing.Point(125, 139);
+            this.Numregistro.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
+            this.Numregistro.ForeColor = System.Drawing.Color.DarkRed;
+            this.Numregistro.Location = new System.Drawing.Point(5, 165);
             this.Numregistro.Name = "Numregistro";
-            this.Numregistro.Size = new System.Drawing.Size(101, 29);
+            this.Numregistro.Size = new System.Drawing.Size(115, 20);
+            this.Numregistro.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label8
             // 
@@ -124,17 +142,19 @@
             // fechaPicker
             // 
             this.fechaPicker.CustomFormat = "";
+            this.fechaPicker.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular);
             this.fechaPicker.Location = new System.Drawing.Point(70, 94);
             this.fechaPicker.Name = "fechaPicker";
-            this.fechaPicker.Size = new System.Drawing.Size(136, 24);
+            this.fechaPicker.Size = new System.Drawing.Size(156, 23);
             this.fechaPicker.TabIndex = 14;
             this.fechaPicker.Value = new System.DateTime(2021, 5, 27, 0, 0, 0, 0);
             // 
             // conteoComboBox
             // 
+            this.conteoComboBox.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular);
             this.conteoComboBox.Location = new System.Drawing.Point(70, 65);
             this.conteoComboBox.Name = "conteoComboBox";
-            this.conteoComboBox.Size = new System.Drawing.Size(137, 23);
+            this.conteoComboBox.Size = new System.Drawing.Size(156, 22);
             this.conteoComboBox.TabIndex = 13;
             this.conteoComboBox.SelectedIndexChanged += new System.EventHandler(this.conteoComboBox_SelectedIndexChanged);
             // 
@@ -147,11 +167,12 @@
             // 
             // sendData
             // 
-            this.sendData.Location = new System.Drawing.Point(5, 182);
+            this.sendData.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular);
+            this.sendData.Location = new System.Drawing.Point(126, 179);
             this.sendData.Name = "sendData";
-            this.sendData.Size = new System.Drawing.Size(100, 28);
+            this.sendData.Size = new System.Drawing.Size(100, 25);
             this.sendData.TabIndex = 9;
-            this.sendData.Text = "Enviar";
+            this.sendData.Text = "Enviar Productos";
             this.sendData.Click += new System.EventHandler(this.sendData_Click_1);
             // 
             // label6
@@ -166,15 +187,16 @@
             // 
             this.ubicacionComboBox.Location = new System.Drawing.Point(70, 37);
             this.ubicacionComboBox.Name = "ubicacionComboBox";
-            this.ubicacionComboBox.Size = new System.Drawing.Size(137, 23);
+            this.ubicacionComboBox.Size = new System.Drawing.Size(156, 23);
             this.ubicacionComboBox.TabIndex = 7;
             this.ubicacionComboBox.SelectedIndexChanged += new System.EventHandler(this.ubicacionComboBox_SelectedIndexChanged);
             // 
             // btnCloseSession
             // 
-            this.btnCloseSession.Location = new System.Drawing.Point(125, 182);
+            this.btnCloseSession.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular);
+            this.btnCloseSession.Location = new System.Drawing.Point(126, 210);
             this.btnCloseSession.Name = "btnCloseSession";
-            this.btnCloseSession.Size = new System.Drawing.Size(101, 28);
+            this.btnCloseSession.Size = new System.Drawing.Size(100, 25);
             this.btnCloseSession.TabIndex = 3;
             this.btnCloseSession.Text = "Cerrar Sesión";
             this.btnCloseSession.Click += new System.EventHandler(this.btnCloseSession_Click);
@@ -189,19 +211,21 @@
             // 
             // almacenComboBox
             // 
+            this.almacenComboBox.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular);
             this.almacenComboBox.Location = new System.Drawing.Point(70, 8);
             this.almacenComboBox.Name = "almacenComboBox";
-            this.almacenComboBox.Size = new System.Drawing.Size(137, 23);
+            this.almacenComboBox.Size = new System.Drawing.Size(156, 22);
             this.almacenComboBox.TabIndex = 1;
             this.almacenComboBox.SelectedIndexChanged += new System.EventHandler(this.almacenComboBox_SelectedIndexChanged);
             // 
             // btnLoadDB
             // 
-            this.btnLoadDB.Location = new System.Drawing.Point(5, 140);
+            this.btnLoadDB.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular);
+            this.btnLoadDB.Location = new System.Drawing.Point(126, 148);
             this.btnLoadDB.Name = "btnLoadDB";
-            this.btnLoadDB.Size = new System.Drawing.Size(100, 30);
+            this.btnLoadDB.Size = new System.Drawing.Size(100, 25);
             this.btnLoadDB.TabIndex = 5;
-            this.btnLoadDB.Text = "Cargar Datos";
+            this.btnLoadDB.Text = "Cargar Productos";
             this.btnLoadDB.Click += new System.EventHandler(this.btnLoadDB_Click_1);
             // 
             // loginPanel
@@ -216,7 +240,7 @@
             this.loginPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.loginPanel.Location = new System.Drawing.Point(0, 0);
             this.loginPanel.Name = "loginPanel";
-            this.loginPanel.Size = new System.Drawing.Size(229, 213);
+            this.loginPanel.Size = new System.Drawing.Size(229, 237);
             this.loginPanel.GotFocus += new System.EventHandler(this.loginPanel_GotFocus);
             // 
             // btnIngresar
@@ -279,9 +303,9 @@
             this.Inventario.Controls.Add(this.barcode);
             this.Inventario.Controls.Add(this.btnGuardar);
             this.Inventario.Controls.Add(this.button2);
-            this.Inventario.Location = new System.Drawing.Point(4, 25);
+            this.Inventario.Location = new System.Drawing.Point(4, 26);
             this.Inventario.Name = "Inventario";
-            this.Inventario.Size = new System.Drawing.Size(229, 213);
+            this.Inventario.Size = new System.Drawing.Size(229, 237);
             this.Inventario.Text = "Inventario";
             this.Inventario.Click += new System.EventHandler(this.tabPage1_Click);
             // 
@@ -337,7 +361,7 @@
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(31, 132);
+            this.btnGuardar.Location = new System.Drawing.Point(37, 157);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(159, 37);
             this.btnGuardar.TabIndex = 0;
@@ -346,7 +370,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(86, 187);
+            this.button2.Location = new System.Drawing.Point(86, 214);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(60, 23);
             this.button2.TabIndex = 2;
@@ -358,10 +382,11 @@
             this.tabControl1.Controls.Add(this.Datos);
             this.tabControl1.Controls.Add(this.Inventario);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Regular);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(237, 242);
+            this.tabControl1.Size = new System.Drawing.Size(237, 267);
             this.tabControl1.TabIndex = 8;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -392,14 +417,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(237, 242);
+            this.ClientSize = new System.Drawing.Size(237, 267);
             this.Controls.Add(this.tabControl1);
-            this.ForeColor = System.Drawing.SystemColors.Control;
+            this.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
-            this.Text = "Inventario";
+            this.Text = "Inventario Físico";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Datos.ResumeLayout(false);
             this.dataPanel.ResumeLayout(false);
@@ -447,6 +472,7 @@
         private System.Windows.Forms.DateTimePicker fechaPicker;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label numLector;
+        private System.Windows.Forms.Button button1;
 
     }
 }

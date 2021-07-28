@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Xml;
 using System.IO;
+using System.Threading;
 namespace prueba
 {
     class MainDB
@@ -148,10 +149,8 @@ namespace prueba
             }
         }
 
-        public bool _loadProductsToSQLite(string id_ubicacion, LiteDB liteDB, string fechaSeleccionada) 
+        public void _loadProductsToSQLite(string id_ubicacion, LiteDB liteDB, string fechaSeleccionada) 
         {
-            bool datosDescargados = true;
-            fechaSeleccionada = fechaSeleccionada.Replace("/", "-");
             string commandString = string.Format("SELECT DISTINCT P.ID,P.PRODUCTO,P.NOMBRE,PP.PRODUCTO,PP.UNIDAD_MEDIDA_EQUIVALENCIA,PP.CODIGO_BARRAS,PU.UBICACION,U.UNIDAD from PRODUCTOS as P "
                                                     +"INNER JOIN PRODUCTOS_PRECIOS as PP on P.ID = PP.PRODUCTO AND P.STATUS = 1 "
                                                     +"INNER JOIN PRODUCTOS_UBICACIONES as PU on PU.PRODUCTO = PP.PRODUCTO "
@@ -164,34 +163,23 @@ namespace prueba
             string id_unidad        = string.Empty;
             string unidad           = string.Empty;
             string codigo_producto  = string.Empty;
-            try
+            this.connection.Open();
+            cmd = new SqlCommand(commandString, connection);
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                this.connection.Open();
-                cmd = new SqlCommand(commandString, connection);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    id_producto = reader[0].ToString();
-                    codigo_producto = reader[1].ToString();
-                    nombre_producto = reader[2].ToString();
-                    id_unidad = reader[4].ToString();
-                    codigo_barras = reader[5].ToString();
-                    unidad = reader[7].ToString();
-                    liteDB.downloadMainDB(codigo_barras, nombre_producto, id_producto, id_ubicacion, id_unidad, unidad, codigo_producto);
-                    
-                }
-                reader.Close();
-                this.connection.Close();
-                MessageBox.Show("CODIGOS CARGADOS");
+                id_producto = reader[0].ToString();
+                codigo_producto = reader[1].ToString();
+                nombre_producto = reader[2].ToString();
+                id_unidad = reader[4].ToString();
+                codigo_barras = reader[5].ToString();
+                unidad = reader[7].ToString();
+                liteDB.downloadMainDB(codigo_barras, nombre_producto, id_producto, id_ubicacion, id_unidad, unidad, codigo_producto);
+                
             }
-            catch (SqlException sql_ex)
-            {
-                MessageBox.Show("SQLserver: Hubo un problema al cargar los codigos, intentelo de nuevo.","Warning SQL Server",MessageBoxButtons.OK,MessageBoxIcon.Exclamation,MessageBoxDefaultButton.Button1);
-                datosDescargados = false;
-            }
-            return datosDescargados;
+            reader.Close();
+            this.connection.Close();
         }
-
         
 
         public string getIdAlmacen(string nombre_almacen) 
@@ -222,7 +210,7 @@ namespace prueba
 
         public string getIdUbicacion(string id_almacen, string clave_ubicacion)
         {
-            string ID_ubicacion = "";
+            string ID_ubicacion = "0";
             string commandString = string.Format("SELECT ID FROM UBICACIONES WHERE ALMACEN = {0} and CLAVE_UBICACION = '{1}'", id_almacen,clave_ubicacion);
             try
             {
@@ -246,6 +234,33 @@ namespace prueba
 
             return ID_ubicacion;
         }
+
+        /*public static List<Object> getListIDUbicationFromServer(string id_almacen)
+        {
+            List<Object> listIDUbication = new List<Object>();
+            string commandString = string.Format("SELECT ID FROM UBICACIONES WHERE ALMACEN = {0}", id_almacen);
+            try
+            {
+                this.connectDB();
+                cmd = new SqlCommand(commandString, connection);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    listIDUbication.Add(reader[0].ToString());
+                }
+                reader.Close();
+            }
+            catch (SqlException sql_ex)
+            {
+                MessageBox.Show(sql_ex.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+
+            return listIDUbication;
+        }*/
 
         public void getUbicaciones(ComboBox ubicacionesComboBox, string almacenNombre)
         {
@@ -312,7 +327,7 @@ namespace prueba
                     conteoActual = getConteoActual("CONTEO2", id_producto, id_unidad,fecha_cap, id_ubicacion);
                     conteoActualizado = int.Parse(conteoActual) + int.Parse(cantidad);
 
-                    string diferencia = getDiferencia(cantidad, id_producto,id_unidad,fecha_cap, id_ubicacion);
+                    string diferencia = getDiferencia(conteoActualizado.ToString(), id_producto, id_unidad, fecha_cap, id_ubicacion);
                     commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO2 = {0}, USUARIO2 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia,fecha_cap, id_unidad, id_ubicacion);
                 }
 
