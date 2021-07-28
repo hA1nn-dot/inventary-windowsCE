@@ -674,37 +674,40 @@ namespace prueba
 
         //Función para descargar los registros del lector SQLite -> SQLserver
         private void _envioRegistros() {
-            
-                try
-                {
-                    string conteo = conteoComboBox.SelectedItem.ToString();
-                     
-                    lector_database.download_ValuesLocalDB(database, conteo);
-                    sesion = false;
-                    _borrarSQLite();
-                        
-                    clean_ComboBoxesInterface();
-                    actualizarNum_productos();
-                    update_ProductosLector();
-                    getAlmacen();
-                    update_InterfaceView(true);
-                }catch (InvalidOperationException ex2) {
-                    MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x "+ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    return;
-                }catch(SQLiteException exq){
-                    MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 124x " + exq.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    return;
-                }
-                catch (SqlException sql)
-                {
-                    MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 1288x " + sql.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo." + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    return;
-                }
+
+            try
+            {
+                string conteo = conteoComboBox.SelectedItem.ToString();
+                lector_database.download_ValuesLocalDB(database, conteo);
+                sesion = false;
+                _borrarSQLite();
+
+                clean_ComboBoxesInterface();
+                actualizarNum_productos();
+                update_ProductosLector();
+                getAlmacen();
+                update_InterfaceView(true);
+            }
+            catch (InvalidOperationException ex2)
+            {
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x " + ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                return;
+            }
+            catch (SQLiteException exq)
+            {
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 124x " + exq.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                return;
+            }
+            catch (SqlException sql)
+            {
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 1288x " + sql.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo." + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                return;
+            }
         }
 
         private void unidadComboBox_SelectedIndexChanged(object sender, EventArgs e)

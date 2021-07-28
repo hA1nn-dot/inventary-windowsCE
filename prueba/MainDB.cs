@@ -322,7 +322,7 @@ namespace prueba
                     string diferencia = getDiferencia(conteoActualizado.ToString(), id_producto,id_unidad,fecha_cap,id_ubicacion);
                     commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO1 = {0}, USUARIO1 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia,fecha_cap,id_unidad, id_ubicacion);
                 }
-                else if (conteo == "Conteo 2") 
+                else if (conteo == "Conteo 2")
                 {
                     conteoActual = getConteoActual("CONTEO2", id_producto, id_unidad,fecha_cap, id_ubicacion);
                     conteoActualizado = int.Parse(conteoActual) + int.Parse(cantidad);
