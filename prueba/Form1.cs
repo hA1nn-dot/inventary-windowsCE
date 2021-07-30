@@ -45,6 +45,7 @@ namespace prueba
         private void Form1_Load(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Maximized;
+            osVersionTxt.Text = Environment.OSVersion.ToString();
             fechaPicker.CustomFormat = "yyyy/MM/dd";
             fechaPicker.Format = DateTimePickerFormat.Custom;
             
@@ -94,9 +95,11 @@ namespace prueba
         }
 
         void update_ProductosLector() {
-            if (File.Exists(rutaSQLite))
-                numLector.Text = "P. Lector: " + lector_database.countRegistros("codigos").ToString();
-            else 
+            
+            if (File.Exists(rutaSQLite)){
+                SQLiteFunction tableCodigos = SQLiteFunction.getInstance();
+                numLector.Text = "P. Lector: " + tableCodigos.getCountAvailableProductsInCodesTable();
+            }else 
                 numLector.Text = "P. Lector: 0";
         }
         private void loadSQLiteData() 
@@ -674,39 +677,61 @@ namespace prueba
 
         //Función para descargar los registros del lector SQLite -> SQLserver
         private void _envioRegistros() {
-
+             
             try
             {
-                string conteo = conteoComboBox.SelectedItem.ToString();
-                lector_database.download_ValuesLocalDB(database, conteo);
-                sesion = false;
-                _borrarSQLite();
+                SQLiteFunction function = SQLiteFunction.getInstance();
+                int countProductAvailable = function.getCountAvailableProductsInCodesTable();
+                MessageBox.Show("Productos sin enviar: " + countProductAvailable);
+                if (countProductAvailable != 0)
+                {
+                    User user = User.getInstance();
+                    List<Product> productList = function.getProductsList();
+                    foreach (var value in productList)
+                    {
+                        /*MessageBox.Show(
+                            "Product: "+value.getIDProduct()+"\n"+
+                            "Unidad: "+value.getIDUnit()+"\n"+
+                            "Fecha: "+user.getDate()+"\n"+
+                            "Ubication: "+value.getIDUbication()+"\n"+
+                            "Cantidad: "+value.getCantidad()+"\n"+
+                            "User: "+user.getUserName()+"\n"+
+                            "Conteo: "+user.getConteo(),"Enviando producto...");*/
 
-                clean_ComboBoxesInterface();
-                actualizarNum_productos();
-                update_ProductosLector();
-                getAlmacen();
-                update_InterfaceView(true);
+                        database._insertValues_MainDB(user.getDate(), value.getIDProduct(), value.getIDUnit(), value.getCantidad(), user.getUserName(), value.getIDUbication(), user.getConteo());
+                        function.updateDeletedProduct(value);
+                    }
+                    if (function.getCountAvailableProductsInCodesTable() != 0)
+                    {
+                        throw new Exception("Algunos productos no se han enviado, intente de nuevo");
+                    }
+                    else {
+                        MessageBox.Show("Productos enviados con éxito, borrando datos...");
+                        sesion = false;
+                        _borrarSQLite();
+                        clean_ComboBoxesInterface();
+                        getAlmacen();
+                        update_InterfaceView(true);
+                    }
+                    actualizarNum_productos();
+                    update_ProductosLector();
+                }
             }
             catch (InvalidOperationException ex2)
             {
-                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x " + ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                return;
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 122x :" + ex2.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             }
             catch (SQLiteException exq)
             {
-                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 124x " + exq.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                return;
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 124x :" + exq.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             }
             catch (SqlException sql)
             {
-                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 1288x " + sql.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                return;
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo. 1288x :" + sql.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo." + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                return;
+                MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo: " + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
             }
         }
 

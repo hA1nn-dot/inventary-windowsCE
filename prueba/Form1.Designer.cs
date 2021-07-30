@@ -65,6 +65,7 @@
             this.mainDBList = new System.Windows.Forms.ListBox();
             this.registros = new System.Windows.Forms.Label();
             this.updateMainTable = new System.Windows.Forms.Button();
+            this.osVersionTxt = new System.Windows.Forms.Label();
             this.Datos.SuspendLayout();
             this.dataPanel.SuspendLayout();
             this.loginPanel.SuspendLayout();
@@ -75,8 +76,8 @@
             // Datos
             // 
             this.Datos.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Datos.Controls.Add(this.dataPanel);
             this.Datos.Controls.Add(this.loginPanel);
+            this.Datos.Controls.Add(this.dataPanel);
             this.Datos.Location = new System.Drawing.Point(4, 26);
             this.Datos.Name = "Datos";
             this.Datos.Size = new System.Drawing.Size(229, 237);
@@ -231,6 +232,7 @@
             // loginPanel
             // 
             this.loginPanel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.loginPanel.Controls.Add(this.osVersionTxt);
             this.loginPanel.Controls.Add(this.btnIngresar);
             this.loginPanel.Controls.Add(this.passwordTxtBox);
             this.loginPanel.Controls.Add(this.label4);
@@ -245,7 +247,7 @@
             // 
             // btnIngresar
             // 
-            this.btnIngresar.Location = new System.Drawing.Point(69, 155);
+            this.btnIngresar.Location = new System.Drawing.Point(70, 155);
             this.btnIngresar.Name = "btnIngresar";
             this.btnIngresar.Size = new System.Drawing.Size(89, 30);
             this.btnIngresar.TabIndex = 9;
@@ -412,6 +414,14 @@
             this.updateMainTable.Text = "Update";
             this.updateMainTable.Click += new System.EventHandler(this.updateMainTable_Click);
             // 
+            // osVersionTxt
+            // 
+            this.osVersionTxt.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular);
+            this.osVersionTxt.Location = new System.Drawing.Point(5, 223);
+            this.osVersionTxt.Name = "osVersionTxt";
+            this.osVersionTxt.Size = new System.Drawing.Size(229, 18);
+            this.osVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -473,6 +483,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label numLector;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label osVersionTxt;
 
     }
 }

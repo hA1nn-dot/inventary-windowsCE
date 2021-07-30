@@ -73,7 +73,9 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="LiteDB.cs" />
+    <Compile Include="LocalDBConnection.cs" />
     <Compile Include="MainDB.cs" />
+    <Compile Include="Product.cs" />
     <Compile Include="Program.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +93,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="SQLiteFunction.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLite.Interop.066.DLL">

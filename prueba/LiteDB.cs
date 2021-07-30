@@ -51,7 +51,6 @@ namespace prueba
             {
                 MessageBox.Show(lite_ex.Message);
             }
-            
         }
         public void createTable_personal()
         {
