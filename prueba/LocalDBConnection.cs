@@ -23,7 +23,7 @@ namespace prueba
             return connection;
         }
 
-        private static string getDataSource() {
+        public static string getDataSource() {
             return "Data Source = ." + getDataBasePath();
         }
 

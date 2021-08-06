@@ -46,6 +46,7 @@
             this.almacenComboBox = new System.Windows.Forms.ComboBox();
             this.btnLoadDB = new System.Windows.Forms.Button();
             this.loginPanel = new System.Windows.Forms.Panel();
+            this.osVersionTxt = new System.Windows.Forms.Label();
             this.btnIngresar = new System.Windows.Forms.Button();
             this.passwordTxtBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@
             this.mainDBList = new System.Windows.Forms.ListBox();
             this.registros = new System.Windows.Forms.Label();
             this.updateMainTable = new System.Windows.Forms.Button();
-            this.osVersionTxt = new System.Windows.Forms.Label();
             this.Datos.SuspendLayout();
             this.dataPanel.SuspendLayout();
             this.loginPanel.SuspendLayout();
@@ -149,6 +149,7 @@
             this.fechaPicker.Size = new System.Drawing.Size(156, 23);
             this.fechaPicker.TabIndex = 14;
             this.fechaPicker.Value = new System.DateTime(2021, 5, 27, 0, 0, 0, 0);
+            this.fechaPicker.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.fechaComboBox_KeyPress);
             // 
             // conteoComboBox
             // 
@@ -158,6 +159,7 @@
             this.conteoComboBox.Size = new System.Drawing.Size(156, 22);
             this.conteoComboBox.TabIndex = 13;
             this.conteoComboBox.SelectedIndexChanged += new System.EventHandler(this.conteoComboBox_SelectedIndexChanged);
+            this.conteoComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.conteoComboBox_KeyPress);
             // 
             // label7
             // 
@@ -191,6 +193,7 @@
             this.ubicacionComboBox.Size = new System.Drawing.Size(156, 23);
             this.ubicacionComboBox.TabIndex = 7;
             this.ubicacionComboBox.SelectedIndexChanged += new System.EventHandler(this.ubicacionComboBox_SelectedIndexChanged);
+            this.ubicacionComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ubicacionComboBox_KeyPress);
             // 
             // btnCloseSession
             // 
@@ -218,6 +221,7 @@
             this.almacenComboBox.Size = new System.Drawing.Size(156, 22);
             this.almacenComboBox.TabIndex = 1;
             this.almacenComboBox.SelectedIndexChanged += new System.EventHandler(this.almacenComboBox_SelectedIndexChanged);
+            this.almacenComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.almacenComboBox_KeyPress);
             // 
             // btnLoadDB
             // 
@@ -244,6 +248,15 @@
             this.loginPanel.Name = "loginPanel";
             this.loginPanel.Size = new System.Drawing.Size(229, 237);
             this.loginPanel.GotFocus += new System.EventHandler(this.loginPanel_GotFocus);
+            // 
+            // osVersionTxt
+            // 
+            this.osVersionTxt.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.osVersionTxt.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular);
+            this.osVersionTxt.Location = new System.Drawing.Point(0, 219);
+            this.osVersionTxt.Name = "osVersionTxt";
+            this.osVersionTxt.Size = new System.Drawing.Size(229, 18);
+            this.osVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnIngresar
             // 
@@ -413,14 +426,6 @@
             this.updateMainTable.TabIndex = 2;
             this.updateMainTable.Text = "Update";
             this.updateMainTable.Click += new System.EventHandler(this.updateMainTable_Click);
-            // 
-            // osVersionTxt
-            // 
-            this.osVersionTxt.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular);
-            this.osVersionTxt.Location = new System.Drawing.Point(5, 223);
-            this.osVersionTxt.Name = "osVersionTxt";
-            this.osVersionTxt.Size = new System.Drawing.Size(229, 18);
-            this.osVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Form1
             // 

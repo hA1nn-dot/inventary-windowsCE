@@ -11,6 +11,9 @@ namespace prueba
 {
     class MainDB
     {
+        private static string configFile = "/SQLiteDatalocal/App.config.xml";
+        private static string rootDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
+        private static string pathfile = "";
         private SqlDataReader reader;
         private SqlConnection connection;
         private SqlCommand cmd;
@@ -24,11 +27,13 @@ namespace prueba
 
         private void connectDB()
         {
+            pathfile = (rootDirectory + Path.GetFullPath(configFile)).Replace("\\", "/");
             setSQLServerConnectionfromXML();
             connectionString = string.Format("Data Source={0};Initial Catalog={3};User ID={1};Password={2};Integrated Security=False; Connect Timeout=7", this.server, this.user, this.password, this.database);
             connection = new SqlConnection(connectionString);
             try
             {
+                if(connection.State == System.Data.ConnectionState.Closed)
                 connection.Open();
             }
             catch (SqlException sql_ex)
@@ -41,9 +46,9 @@ namespace prueba
         {
             try
             {
-                
+
                 XmlDocument doc = new XmlDocument();
-                doc.Load("./Application/Inventario fisico/SQLiteDatalocal/App.config.xml");
+                doc.Load(pathfile);
 
                 foreach (XmlNode node in doc.DocumentElement.ChildNodes)
                 {
@@ -72,8 +77,12 @@ namespace prueba
                     }
                 }
             }
-            catch (Exception ex) {
-                MessageBox.Show("Problemas con el archivo App.conf");
+            catch (FileNotFoundException notfound) {
+                MessageBox.Show("El archivo de configuración no existe: "+notfound.Message.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Problemas con el archivo App.conf: "+ex.Message.ToString());
             }
             
         }
@@ -151,12 +160,13 @@ namespace prueba
 
         public void _loadProductsToSQLite(string id_ubicacion, LiteDB liteDB, string fechaSeleccionada) 
         {
-            string commandString = string.Format("SELECT DISTINCT P.ID,P.PRODUCTO,P.NOMBRE,PP.PRODUCTO,PP.UNIDAD_MEDIDA_EQUIVALENCIA,PP.CODIGO_BARRAS,PU.UBICACION,U.UNIDAD from PRODUCTOS as P "
-                                                    +"INNER JOIN PRODUCTOS_PRECIOS as PP on P.ID = PP.PRODUCTO AND P.STATUS = 1 "
-                                                    +"INNER JOIN PRODUCTOS_UBICACIONES as PU on PU.PRODUCTO = PP.PRODUCTO "
-                                                    +"INNER JOIN UNIDADES as U on U.ID = PP.UNIDAD_MEDIDA_EQUIVALENCIA "
-                                                    +"INNER JOIN CONTEOS_IF as CI on CI.PRODUCTO = P.ID and CI.FECHA = '{1}' "
-                                                    +"AND PU.UBICACION = {0}", id_ubicacion,fechaSeleccionada);
+            string commandString = string.Format(
+                "SELECT CI.PRODUCTO,P.PRODUCTO,P.NOMBRE,CI.UNIDAD,PP.CODIGO_BARRAS,U.UNIDAD FROM CONTEOS_IF as CI " +
+                "INNER JOIN PRODUCTOS as P on P.ID = CI.PRODUCTO AND P.STATUS = 1 "+
+                "INNER JOIN PRODUCTOS_PRECIOS as PP on PP.PRODUCTO = CI.PRODUCTO "+
+                "INNER JOIN UNIDADES as U on U.ID = CI.UNIDAD "+
+                "where CI.UBICACION = {0} AND CI.FECHA = '{1}'"
+                ,id_ubicacion,fechaSeleccionada);
             string id_producto      = string.Empty;
             string codigo_barras    = string.Empty;
             string nombre_producto  = string.Empty;
@@ -171,9 +181,9 @@ namespace prueba
                 id_producto = reader[0].ToString();
                 codigo_producto = reader[1].ToString();
                 nombre_producto = reader[2].ToString();
-                id_unidad = reader[4].ToString();
-                codigo_barras = reader[5].ToString();
-                unidad = reader[7].ToString();
+                id_unidad = reader[3].ToString();
+                codigo_barras = reader[4].ToString();
+                unidad = reader[5].ToString();
                 liteDB.downloadMainDB(codigo_barras, nombre_producto, id_producto, id_ubicacion, id_unidad, unidad, codigo_producto);
                 
             }
@@ -235,32 +245,6 @@ namespace prueba
             return ID_ubicacion;
         }
 
-        /*public static List<Object> getListIDUbicationFromServer(string id_almacen)
-        {
-            List<Object> listIDUbication = new List<Object>();
-            string commandString = string.Format("SELECT ID FROM UBICACIONES WHERE ALMACEN = {0}", id_almacen);
-            try
-            {
-                this.connectDB();
-                cmd = new SqlCommand(commandString, connection);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    listIDUbication.Add(reader[0].ToString());
-                }
-                reader.Close();
-            }
-            catch (SqlException sql_ex)
-            {
-                MessageBox.Show(sql_ex.Message);
-            }
-            finally
-            {
-                this.connection.Close();
-            }
-
-            return listIDUbication;
-        }*/
 
         public void getUbicaciones(ComboBox ubicacionesComboBox, string almacenNombre)
         {
@@ -307,7 +291,7 @@ namespace prueba
             return encontrado;
         }
 
-        public void _insertValues_MainDB(string fecha_cap, string id_producto, string id_unidad, string cantidad, string usuario, string id_ubicacion, string conteo) 
+        public void insertProductCONTEOS_IF(string fecha_cap, string id_producto, string id_unidad, string cantidad, string usuario, string id_ubicacion, string conteo) 
         {
             string commandString = "";
             string conteoActual = "";               //Cantidad ConteoActual
@@ -399,6 +383,173 @@ namespace prueba
                 throw e_cast;
             }
             return diferencia.ToString();
+        }
+
+        public int getCountProductFromConteosIf(string date, string id_ubication) {
+            string dateConteoFormat = date.Replace("/","-");
+            string commandString = string.Format("SELECT COUNT(*) FROM CONTEOS_IF WHERE FECHA = '{0}' AND UBICACION = {1}"
+                ,dateConteoFormat,id_ubication);
+            connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            int productsInConteoIF = Convert.ToInt32(cmd.ExecuteScalar());
+            this.connection.Close();
+            return productsInConteoIF;
+        }
+
+        public bool isProductExistsInBackUpTable(Product product) {
+            string commandString = string.Format("SELECT COUNT(*) FROM CONTEOS_IF_IMPORTA WHERE "+
+                "UBICACION = {0} "+
+                "AND PRODUCTO = {1} "+
+                "AND UNIDAD = {2}" +
+                "AND FECHA = CONVERT(datetime,'{3}',101)"
+                ,product.getIDUbication()
+                ,product.getIDProduct()
+                ,product.getIDUnit()
+                ,product.getDate().Replace("/","-"));
+            connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            int rows = Convert.ToInt32(cmd.ExecuteScalar());
+            connection.Close();
+            if (rows == 0) 
+                return false;   //Insert
+            return true;        //Update
+        }
+
+        public void updateProductInBackUpTable(Product product, User user) {
+            string commandString = "";
+            string changeDateFormat = product.getDate().Replace("/", "-");
+            int conteoEnLector = Convert.ToInt32(product.getCantidad());
+            int conteoEnSistema = getConteoActualInBackUpTable(product, user);
+            int conteoActualizado = conteoEnSistema + conteoEnLector;
+            if (user.getConteo() == "Conteo 1"){
+                commandString = string.Format("UPDATE CONTEOS_IF_IMPORTA set CONTEO1 = {0}"+
+                    "WHERE PRODUCTO = {1} AND UNIDAD = {2} AND FECHA = CONVERT(datetime,'{3}',101) AND UBICACION = {4}"
+                    ,conteoActualizado
+                    ,product.getIDProduct()
+                    ,product.getIDUnit()
+                    ,product.getDate()
+                    ,product.getIDUbication()
+                    );
+            }
+            else if (user.getConteo() == "Conteo 2")
+            {
+                commandString = string.Format("UPDATE CONTEOS_IF_IMPORTA set CONTEO2 = {0}" +
+                    "WHERE PRODUCTO = {1} AND UNIDAD = {2} AND FECHA = CONVERT(datetime,'{3}',101) AND UBICACION = {4}"
+                    , conteoActualizado
+                    , product.getIDProduct()
+                    , product.getIDUnit()
+                    , product.getDate()
+                    , product.getIDUbication()
+                    );
+            }
+            else
+                throw new Exception("Error con el conteo en la base local, favor de verificar con el administrador.");
+            connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            int rows = cmd.ExecuteNonQuery();
+            connection.Close();
+            if (rows == 0 || rows == null)
+                throw new Exception("No se ha podido actualizar el producto "+product.getIDProduct()+" en el respaldo");
+            
+        }
+        private int getConteoActualInBackUpTable(Product product,User usuario) {
+            int cantidadActual = 0;
+            string commandString = "";
+            if (usuario.getConteo() == "Conteo 1") {
+                commandString = string.Format("SELECT CONTEO1 FROM CONTEOS_IF_IMPORTA "+
+                    "where PRODUCTO = {0} AND UNIDAD = {1} AND FECHA = CONVERT(datetime,'{2}',101) AND UBICACION = {3}"
+                , product.getIDProduct(),product.getIDUnit(),product.getDate(),product.getIDUbication());
+            }
+            else if (usuario.getConteo() == "Conteo 2")
+            {
+                commandString = string.Format("SELECT CONTEO2 FROM CONTEOS_IF_IMPORTA " +
+                    "where PRODUCTO = {0} AND UNIDAD = {1} AND FECHA = CONVERT(datetime,'{2}',101) AND UBICACION = {3}"
+                , product.getIDProduct(), product.getIDUnit(), product.getDate(), product.getIDUbication());
+            }
+            else {
+                throw new Exception("Error con el conteo en la base local, favor de verificar con el administrador.");
+            }
+            this.connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                cantidadActual = Convert.ToInt32(reader[0].ToString());
+            }
+            reader.Close();
+            this.connection.Close();
+            return cantidadActual;
+        }
+
+        public void insertProductInBackUpTable(Product product, User usuario)
+        {
+            string commandString = "";
+            string changeDateFormat = product.getDate().Replace("/","-");
+            if (usuario.getConteo() == "Conteo 1")
+            {
+                commandString = string.Format(
+                    "INSERT INTO CONTEOS_IF_IMPORTA (FECHA,UBICACION,PRODUCTO,UNIDAD,CONTEO1,USUARIOC1,STATUS) " +
+                        "VALUES (CONVERT(datetime,'{0}',101),{1},{2},{3},{4},'{5}',1)"
+                        , changeDateFormat
+                        , product.getIDUbication()
+                        , product.getIDProduct()
+                        , product.getIDUnit()
+                        , product.getCantidad()
+                        , usuario.getUserName());
+            }
+            else if (usuario.getConteo() == "Conteo 2")
+            {
+                commandString = string.Format(
+                    "INSERT INTO CONTEOS_IF_IMPORTA (FECHA,UBICACION,PRODUCTO,UNIDAD,CONTEO2,USUARIOC2,STATUS) " +
+                        "VALUES (CONVERT(datetime,'{0}',101),{1},{2},{3},{4},'{5}',1)"
+                        , changeDateFormat
+                        , product.getIDUbication()
+                        , product.getIDProduct()
+                        , product.getIDUnit()
+                        , product.getCantidad()
+                        , usuario.getUserName());
+            }
+            else
+                throw new Exception("Error con el conteo en la base local, favor de verificar con el administrador.");
+            connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            int rows = cmd.ExecuteNonQuery();
+            connection.Close();
+            if (rows == 0 || rows == null)
+                throw new Exception("No se ha insertado el producto en el respaldo");
+        }
+
+        public bool isThisProductLoadedCorrectly(Product product, User usuario) {
+            string commandString = "";
+            if (usuario.getConteo() == "Conteo 1")
+            {
+                commandString = string.Format(
+                    "SELECT COUNT(*) FROM CONTEOS_IF as CI WHERE EXISTS (SELECT * from CONTEOS_IF_IMPORTA as CI2 " +
+                    "where CI2.PRODUCTO = CI.PRODUCTO " +
+                    "AND CI2.UNIDAD = CI.UNIDAD " +
+                    "AND CI2.CONTEO1 = CI.CONTEO1 " +
+                    "AND CI2.UBICACION = CI.UBICACION) " +
+                    "AND CI.FECHA = '{0}' AND UBICACION = {1} AND PRODUCTO = {2} AND UNIDAD = {3}",
+                    usuario.getDate(), product.getIDUbication(), product.getIDProduct(), product.getIDUnit());
+            }
+            else if (usuario.getConteo() == "Conteo 2") {
+                commandString = string.Format(
+                    "SELECT COUNT(*) FROM CONTEOS_IF as CI WHERE EXISTS (SELECT * from CONTEOS_IF_IMPORTA as CI2 " +
+                    "where CI2.PRODUCTO = CI.PRODUCTO " +
+                    "AND CI2.UNIDAD = CI.UNIDAD " +
+                    "AND CI2.CONTEO2 = CI.CONTEO2 " +
+                    "AND CI2.UBICACION = CI.UBICACION) " +
+                    "AND CI.FECHA = '{0}' AND UBICACION = {1} AND PRODUCTO = {2} AND UNIDAD = {3}",
+                    usuario.getDate(), product.getIDUbication(), product.getIDProduct(), product.getIDUnit());
+            }else
+                throw new Exception("Error con el conteo en la base local, favor de verificar con el administrador.");
+            connectDB();
+            cmd = new SqlCommand(commandString, connection);
+            int rows = cmd.ExecuteNonQuery();
+            connection.Close();
+            if (rows == 0 || rows == null)
+                return false;
+            return true;
         }
 
     }

@@ -10,7 +10,7 @@ namespace prueba
     class LiteDB
     {
         private SQLiteDataReader reader;
-        private SQLiteConnection connection = new SQLiteConnection("Data Source = ./Application/Inventario fisico/SQLiteDatalocal/localdb.db");
+        private SQLiteConnection connection = new SQLiteConnection(LocalDBConnection.getDataSource());
         
         //  Dolphin 60s de Octavio\\\Program Files
         //"Data Source = ./Application/Inventario fisico/SQLiteDatalocal/localdb.db"
@@ -21,7 +21,7 @@ namespace prueba
         {
             try
             {
-                connection = new SQLiteConnection("Data Source = ./Application/Inventario fisico/SQLiteDatalocal/localdb.db");
+                connection = new SQLiteConnection(LocalDBConnection.getDataSource());
                 if (connection.State != System.Data.ConnectionState.Open)
                 {
                     this.connection.Open();
@@ -116,15 +116,17 @@ namespace prueba
             {
                 if (table != "")
                 {
-                    this.connectLiteDB();
-                    cmd = new SQLiteCommand(query, connection);
+                    //this.connectLiteDB();   //error al abrir conexion
+                    SQLiteConnection conn = LocalDBConnection.getInstance();
+                    conn.Open();
+                    cmd = new SQLiteCommand(query, conn);
                     reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
                         encontrado = true;        //Ya hay un usuario ingresado
                     }
                     reader.Close();
-                    this.connection.Close();
+                    conn.Close();
                 }
                 else {
                     return false;
@@ -689,53 +691,6 @@ namespace prueba
         
         }
 
-        public void download_ValuesLocalDB(MainDB SQLServer, string conteo)
-        {
-            string query = "SELECT * FROM codigos";
-
-            string fecha = string.Empty;
-            string id_producto = string.Empty;
-            string id_unidad = string.Empty;
-            string cantidad = string.Empty;
-            string usuario = getUsuario();
-            string id_ubicacion = string.Empty;
-            try
-            {
-                this.connection.Open();
-                cmd = new SQLiteCommand(query, this.connection);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    cantidad = reader[2].ToString();
-                    fecha = reader[3].ToString();
-                    id_producto = reader[4].ToString();
-                    id_ubicacion = reader[5].ToString();
-                    id_unidad = reader[6].ToString();
-
-                    SQLServer._insertValues_MainDB(fecha, id_producto, id_unidad, cantidad, usuario, id_ubicacion, conteo);
-                }
-                MessageBox.Show("DATOS ENVIADOS");
-                reader.Close();
-                cmd.Dispose();
-                this.connection.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                throw ex;
-            }
-            catch (SqlException exp)
-            {
-                throw exp;
-            }
-            catch (InvalidOperationException imp) 
-            {
-                throw imp;
-            }
-            catch (Exception pas)
-            {
-                throw pas;
-            }
-        }
 
         public void deleteCodigosTable()
         {

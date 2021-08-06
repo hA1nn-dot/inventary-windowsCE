@@ -24,8 +24,9 @@ namespace prueba
 
         private MainDB database = new MainDB();         //Clase de la base de datos SQL Server
         private LiteDB lector_database = new LiteDB();  //Clase de la base de datos SQLite
-
-        private string rutaSQLite = @"./Application/Inventario fisico/SQLiteDatalocal/localdb.db";
+        private User usuario = null;
+        //private string rutaSQLite = LocalDBConnection.getDataSource();
+        private string rutaSQLite = "./Application/Inventario Fisico/SQLiteDatalocal/localdb.db";
         private string almacen;
         private string ubicacion;
         private string nombre_usuario;
@@ -49,13 +50,15 @@ namespace prueba
             fechaPicker.CustomFormat = "yyyy/MM/dd";
             fechaPicker.Format = DateTimePickerFormat.Custom;
             
-            fechaPicker.Value = fechaActual;
+            //fechaPicker.Value = fechaActual;
 
-            crear_DatabaseSQLite();
-            sesion = lector_database.validate_registers_inTable("mainCodigos");
-
-            if (lector_database.getFecha() != "")
-                fechaPicker.Value = Convert.ToDateTime(lector_database.getFecha());
+            if (lector_database.countRegistros("personal") != 0) {
+                User user = User.getInstance();
+                sesion = true;
+                usuario = user;
+                fechaPicker.Value = Convert.ToDateTime(usuario.getDate());
+            }
+                
             
 
             if (sesion && lector_database.validate_registers_inTable("mainCodigos"))
@@ -119,13 +122,17 @@ namespace prueba
 
             userTxtBox.Focus();
             passwordTxtBox.Text = "";
-            fechaPicker.Value = fechaActual;
+            crear_DatabaseSQLite();
+            if(lector_database.countRegistros("personal") == 0)
+                fechaPicker.Value = fechaActual;
         }
 
         private void loadInterface()
         {
+            crear_DatabaseSQLite();
             dataPanel.Visible = true;
             loginPanel.Visible = false;
+            almacenComboBox.Focus();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -272,10 +279,18 @@ namespace prueba
                 {
                     if (database.verifyUser_SQLServer(nombre_usuario, usuario_password))
                     {
-                        loadInterface();
-                        getAlmacen();
-                        actualizarNum_productos();
-                        update_ProductosLector();
+                        if (lector_database.countRegistros("personal") != 0)
+                        {
+                            SQLiteFunction personalTable = SQLiteFunction.getInstance();
+                            loadInterface();
+                        }
+                        else
+                        {
+                            loadInterface();
+                            getAlmacen();
+                            actualizarNum_productos();
+                            update_ProductosLector();
+                        }
                     }
                     else
                     {
@@ -305,6 +320,14 @@ namespace prueba
 
             database.getAlmacenes(almacenComboBox);     //llenar el combo de almacenes
             almacenComboBox.SelectedIndex = 0;
+            almacenComboBox.Focus();
+        }
+
+        private void getConteo() {
+            conteoComboBox.Items.Clear();
+            conteoComboBox.Items.Add("Conteo 1");
+            conteoComboBox.Items.Add("Conteo 2");
+            conteoComboBox.SelectedIndex = 0;
         }
 
         //Cerrando sesión
@@ -319,7 +342,8 @@ namespace prueba
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 try {
-                    actualizarNum_productos();
+                    loadLogin();
+                    /*actualizarNum_productos();
                     update_ProductosLector();
                     File.Delete(rutaSQLite);
 
@@ -336,7 +360,7 @@ namespace prueba
                     }
                     else {
                         MessageBox.Show("No hay registros cargados", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    }
+                    }*/
                     
                 }catch(Exception ex){
                     MessageBox.Show("Error al borrar los datos");
@@ -386,7 +410,26 @@ namespace prueba
                 focus_On_cantidad();
             
         }
+        private void almacenComboBox_KeyPress(object sender, KeyPressEventArgs e) {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+                ubicacionComboBox.Focus();
+        }
 
+        private void ubicacionComboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+                conteoComboBox.Focus();
+        }
+        private void conteoComboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+                fechaPicker.Focus();
+        }
+        private void fechaComboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+                btnLoadDB.Focus();
+        }
         void guardarDatos(bool allowedCode) 
         {
             string codigo = barcode.Text.Trim();
@@ -490,6 +533,7 @@ namespace prueba
         private void btnLoadDB_Click_1(object sender, EventArgs e)
         {
             loadData_toSQLite();
+            almacenComboBox.Focus();
         }
 
         //Función para cargar los productos al lector SQLServer -> SQLite
@@ -505,7 +549,8 @@ namespace prueba
                 ubicacionSeleccionado = ubicacionComboBox.SelectedItem.ToString();
                 conteoSeleccionado = conteoComboBox.SelectedItem.ToString();
                 fechaSeleccionada = fechaPicker.Text;
-                try {
+                try
+                {
                     if (database.getFechaConteo(fechaSeleccionada))
                     {
                         SQLServer_to_SQLite(almacenSeleccionado, ubicacionSeleccionado, conteoSeleccionado, fechaSeleccionada);
@@ -515,8 +560,11 @@ namespace prueba
                         MessageBox.Show("No hay conteo en la fecha: " + fechaSeleccionada, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                         return;
                     }
-                }catch(Exception sql_ex){
-                    MessageBox.Show(sql_ex.Message,"Error SQLServer",MessageBoxButtons.OK,MessageBoxIcon.Exclamation,MessageBoxDefaultButton.Button1);
+                }
+                catch (Exception sql_ex)
+                {
+
+                    MessageBox.Show(sql_ex.Message, "Error SQLServer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                     return;
                 }
             }
@@ -524,6 +572,9 @@ namespace prueba
             {
                 MessageBox.Show("Error al ingresar los datos, favor de verificar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
                 update_InterfaceView(true);
+            }
+            finally {
+                update_ProductosLector();
             }
         }
 
@@ -557,29 +608,21 @@ namespace prueba
                 /*if (ubicacionSeleccionado == "Todas las áreas") //Haim
                     listIDUbication = MainDB.getListIDUbicationFromServer(almacenSeleccionado);
                 else*/
-                    this.ubicacion = database.getIdUbicacion(this.almacen, ubicacionSeleccionado);
-
-                loadProductsThread = new Thread(() =>
-                {
-                    try
-                    {
-                        MessageBox.Show("Cargando productos, por favor espere...");
-                        database._loadProductsToSQLite(ubicacion, lector_database, fechaSeleccionada);
-                        MessageBox.Show("Productos cargados existosamente...");
-                        sesion = true;
-                        if (lector_database.countRegistros("personal") == 0)
-                            lector_database._loadUsuario(nombre_usuario, almacenSeleccionado, ubicacionSeleccionado, conteoSeleccionado, fechaSeleccionada);
+                this.ubicacion = database.getIdUbicacion(this.almacen, ubicacionSeleccionado);
+                int productsInConteosIfTable = database.getCountProductFromConteosIf(fechaSeleccionada, ubicacion); 
+                if (productsInConteosIfTable != 0) {
+                    MessageBox.Show("Cargando productos, por favor espere...","Aviso");
+                    database._loadProductsToSQLite(ubicacion, lector_database, fechaSeleccionada);
+                    MessageBox.Show("Productos cargados existosamente...","Éxito",MessageBoxButtons.OK,MessageBoxIcon.Asterisk,MessageBoxDefaultButton.Button1);
+                    sesion = true;
+                    if (lector_database.countRegistros("personal") == 0) {
+                        lector_database._loadUsuario(nombre_usuario, almacenSeleccionado, ubicacionSeleccionado, conteoSeleccionado, fechaSeleccionada);
+                        usuario = User.getInstance();
                     }
-                    catch (SqlException sqlError)
-                    {
-                        throw sqlError;
-                    }
-                    catch (Exception exc) {
-                        throw exc;
-                    }
-                    
-                });
-                loadProductsThread.Start();
+                        
+                }else
+                    throw new Exception("No hay conteos para el área: " + ubicacionSeleccionado);
+                actualizarNum_productos();
                 btnCloseSession.Enabled = true;
                 sendData.Enabled = true;
             }
@@ -592,30 +635,13 @@ namespace prueba
             }
             catch (Exception exc2)
             {
-                MessageBox.Show("Error general" + exc2.Message.ToString());
+                MessageBox.Show("Error general: " + exc2.Message.ToString());
+                almacenComboBox.Focus();
                 _borrarSQLite();
-                clean_ComboBoxesInterface();
                 update_InterfaceView(true);
             }
             
 
-            /*if (database._loadProductsToSQLite(ubicacion, lector_database,fechaSeleccionada))
-            {
-                actualizarNum_productos();
-                sesion = true;
-                if (lector_database.countRegistros("personal") == 0) {
-                    lector_database._loadUsuario(nombre_usuario, almacenSeleccionado, ubicacionSeleccionado, conteoSeleccionado, fechaSeleccionada);
-                }
-            }
-            else {
-                _borrarSQLite();
-                clean_ComboBoxesInterface();
-                update_InterfaceView(true);
-                getAlmacen();
-                return;
-            }
-            btnCloseSession.Enabled = true;
-            sendData.Enabled = true;*/
         }
 
         private void updateMainTable_Click(object sender, EventArgs e)
@@ -670,51 +696,57 @@ namespace prueba
                 resultado = MessageBox.Show("¿Seguro que quiere enviar los registros?", "Envio de registros", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
                 if (resultado == System.Windows.Forms.DialogResult.Yes)
                     _envioRegistros();
+                
             }
             else
-                MessageBox.Show("No se han cargado los productos al lector.", "Error cargar", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                MessageBox.Show("No se encuentra el archivo localdb\nPath: "+rutaSQLite, "Error cargar", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            almacenComboBox.Focus();
         }
 
         //Función para descargar los registros del lector SQLite -> SQLserver
         private void _envioRegistros() {
-             
+
             try
             {
                 SQLiteFunction function = SQLiteFunction.getInstance();
                 int countProductAvailable = function.getCountAvailableProductsInCodesTable();
-                MessageBox.Show("Productos sin enviar: " + countProductAvailable);
+                MessageBox.Show("Enviando " + countProductAvailable +" productos...");
                 if (countProductAvailable != 0)
                 {
                     User user = User.getInstance();
                     List<Product> productList = function.getProductsList();
                     foreach (var value in productList)
                     {
-                        /*MessageBox.Show(
-                            "Product: "+value.getIDProduct()+"\n"+
-                            "Unidad: "+value.getIDUnit()+"\n"+
-                            "Fecha: "+user.getDate()+"\n"+
-                            "Ubication: "+value.getIDUbication()+"\n"+
-                            "Cantidad: "+value.getCantidad()+"\n"+
-                            "User: "+user.getUserName()+"\n"+
-                            "Conteo: "+user.getConteo(),"Enviando producto...");*/
+                        if (database.isProductExistsInBackUpTable(value))
+                            database.updateProductInBackUpTable(value, user);
+                        else database.insertProductInBackUpTable(value, user);
 
-                        database._insertValues_MainDB(user.getDate(), value.getIDProduct(), value.getIDUnit(), value.getCantidad(), user.getUserName(), value.getIDUbication(), user.getConteo());
-                        function.updateDeletedProduct(value);
+                        database.insertProductCONTEOS_IF(user.getDate(), value.getIDProduct(), value.getIDUnit(), value.getCantidad(), user.getUserName(), value.getIDUbication(), user.getConteo());
+
+                        if (database.isThisProductLoadedCorrectly(value, user))
+                        {
+                            function.updateDeletedProduct(value);
+                        }else
+                            throw new Exception("No se ha cargado el producto:\nID: "+value.getIDProduct()+"\nUNIDAD: "+value.getIDUnit());
                     }
                     if (function.getCountAvailableProductsInCodesTable() != 0)
                     {
+                        update_ProductosLector();
                         throw new Exception("Algunos productos no se han enviado, intente de nuevo");
                     }
-                    else {
-                        MessageBox.Show("Productos enviados con éxito, borrando datos...");
+                    else
+                    {
+                        MessageBox.Show(countProductAvailable+" productos enviados con éxito, borrando registros del lector...");
                         sesion = false;
                         _borrarSQLite();
-                        clean_ComboBoxesInterface();
+                        usuario.deleteUser();
+                        usuario = null;
                         getAlmacen();
+                        getConteo();
+                        almacenComboBox.Focus();
                         update_InterfaceView(true);
                     }
                     actualizarNum_productos();
-                    update_ProductosLector();
                 }
             }
             catch (InvalidOperationException ex2)
@@ -732,6 +764,9 @@ namespace prueba
             catch (Exception ex)
             {
                 MessageBox.Show("Ha ocurrido un error inesperado, vuelva a enviar de nuevo: " + ex.Message.ToString(), "Error de envio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            }
+            finally {
+                update_ProductosLector();
             }
         }
 

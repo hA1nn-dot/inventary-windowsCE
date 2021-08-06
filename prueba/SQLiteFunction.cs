@@ -17,6 +17,22 @@ namespace prueba
                 function = new SQLiteFunction();
             return function;
         }
+
+        public void updateUserName(string userName) {
+            string query = string.Format("UPDATE personal SET usuario = '{0}'",userName);
+            SQLiteConnection connection = LocalDBConnection.getInstance();
+            openConnection(connection);
+            SQLiteCommand cmd = new SQLiteCommand(query, connection);
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                cmd.Dispose();
+                connection.Close();
+                throw new Exception("No se ha actualizado el nombre");
+            }
+            cmd.Dispose();
+            connection.Close();
+        }
+
         public void updateDeletedProduct(Product product){
             string query = string.Format("UPDATE codigos set subido = 0 WHERE id_producto = {0} AND id_unidad = {1} AND id_ubicacion = {2}",
                 product.getIDProduct(),product.getIDUnit(),product.getIDUbication());

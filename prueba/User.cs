@@ -24,11 +24,17 @@ namespace prueba
                 if (values.Key == "ubicacion") ubicationName = values.Value;
                 if (values.Key == "almacen") almacenName = values.Value;
             }
+            if (userName == "" || conteo == "" || date == "" || ubicationName == "" || almacenName == "")
+                usuario = null;
         }
         public static User getInstance() {
             if (usuario == null)
                 usuario = new User();
             return usuario;
+        }
+
+        public void deleteUser() {
+            usuario = null;
         }
 
         public string getDate() {

@@ -36,5 +36,17 @@ namespace prueba
         public string getIDUnit() {
             return idUnit;
         }
+
+
+        public string getStringProductInformation()
+        {
+            return
+            "Product: " + getIDProduct() + "\n" +
+            "Unidad: " + getIDUnit() + "\n" +
+            "Ubication: " + getIDUbication() + "\n" +
+            "Cantidad: " + getCantidad() + "\n"+
+            "Fecha: " + getDate();
+                         
+        }
     }
 }
