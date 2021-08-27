@@ -27,7 +27,7 @@ namespace prueba
             return "Data Source = ." + getDataBasePath();
         }
 
-        private static string getDataBasePath()
+        public static string getDataBasePath()
         {
             string fullDBPath = (rootDirectory + Path.GetFullPath(dataBaseFile)).Replace("\\", "/");
                 //throw new FileNotFoundException("NO se ha encontrado la base de datos "+fullDBPath);

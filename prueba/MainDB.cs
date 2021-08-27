@@ -163,7 +163,7 @@ namespace prueba
             string commandString = string.Format(
                 "SELECT CI.PRODUCTO,P.PRODUCTO,P.NOMBRE,CI.UNIDAD,PP.CODIGO_BARRAS,U.UNIDAD FROM CONTEOS_IF as CI " +
                 "INNER JOIN PRODUCTOS as P on P.ID = CI.PRODUCTO AND P.STATUS = 1 "+
-                "INNER JOIN PRODUCTOS_PRECIOS as PP on PP.PRODUCTO = CI.PRODUCTO "+
+                "INNER JOIN PRODUCTOS_PRECIOS as PP on PP.PRODUCTO = CI.PRODUCTO AND PP.UNIDAD_MEDIDA_EQUIVALENCIA = CI.UNIDAD " +
                 "INNER JOIN UNIDADES as U on U.ID = CI.UNIDAD "+
                 "where CI.UBICACION = {0} AND CI.FECHA = '{1}'"
                 ,id_ubicacion,fechaSeleccionada);

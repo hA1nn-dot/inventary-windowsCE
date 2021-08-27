@@ -30,6 +30,14 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Datos = new System.Windows.Forms.TabPage();
+            this.loginPanel = new System.Windows.Forms.Panel();
+            this.osVersionTxt = new System.Windows.Forms.Label();
+            this.btnIngresar = new System.Windows.Forms.Button();
+            this.passwordTxtBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.userTxtBox = new System.Windows.Forms.TextBox();
+            this.logo = new System.Windows.Forms.PictureBox();
             this.dataPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.numLector = new System.Windows.Forms.Label();
@@ -45,14 +53,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.almacenComboBox = new System.Windows.Forms.ComboBox();
             this.btnLoadDB = new System.Windows.Forms.Button();
-            this.loginPanel = new System.Windows.Forms.Panel();
-            this.osVersionTxt = new System.Windows.Forms.Label();
-            this.btnIngresar = new System.Windows.Forms.Button();
-            this.passwordTxtBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.userTxtBox = new System.Windows.Forms.TextBox();
-            this.logo = new System.Windows.Forms.PictureBox();
             this.Inventario = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.unidadComboBox = new System.Windows.Forms.ComboBox();
@@ -67,8 +67,8 @@
             this.registros = new System.Windows.Forms.Label();
             this.updateMainTable = new System.Windows.Forms.Button();
             this.Datos.SuspendLayout();
-            this.dataPanel.SuspendLayout();
             this.loginPanel.SuspendLayout();
+            this.dataPanel.SuspendLayout();
             this.Inventario.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
@@ -76,12 +76,86 @@
             // Datos
             // 
             this.Datos.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.Datos.Controls.Add(this.loginPanel);
             this.Datos.Controls.Add(this.dataPanel);
+            this.Datos.Controls.Add(this.loginPanel);
             this.Datos.Location = new System.Drawing.Point(4, 26);
             this.Datos.Name = "Datos";
             this.Datos.Size = new System.Drawing.Size(229, 237);
             this.Datos.Text = "Login";
+            // 
+            // loginPanel
+            // 
+            this.loginPanel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.loginPanel.Controls.Add(this.osVersionTxt);
+            this.loginPanel.Controls.Add(this.btnIngresar);
+            this.loginPanel.Controls.Add(this.passwordTxtBox);
+            this.loginPanel.Controls.Add(this.label4);
+            this.loginPanel.Controls.Add(this.label2);
+            this.loginPanel.Controls.Add(this.userTxtBox);
+            this.loginPanel.Controls.Add(this.logo);
+            this.loginPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loginPanel.Location = new System.Drawing.Point(0, 0);
+            this.loginPanel.Name = "loginPanel";
+            this.loginPanel.Size = new System.Drawing.Size(229, 237);
+            this.loginPanel.GotFocus += new System.EventHandler(this.loginPanel_GotFocus);
+            // 
+            // osVersionTxt
+            // 
+            this.osVersionTxt.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.osVersionTxt.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular);
+            this.osVersionTxt.Location = new System.Drawing.Point(0, 219);
+            this.osVersionTxt.Name = "osVersionTxt";
+            this.osVersionTxt.Size = new System.Drawing.Size(229, 18);
+            this.osVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // btnIngresar
+            // 
+            this.btnIngresar.Location = new System.Drawing.Point(70, 155);
+            this.btnIngresar.Name = "btnIngresar";
+            this.btnIngresar.Size = new System.Drawing.Size(89, 30);
+            this.btnIngresar.TabIndex = 9;
+            this.btnIngresar.Text = "Ingresar";
+            this.btnIngresar.Click += new System.EventHandler(this.btnIngresar_Click);
+            // 
+            // passwordTxtBox
+            // 
+            this.passwordTxtBox.Location = new System.Drawing.Point(96, 113);
+            this.passwordTxtBox.Name = "passwordTxtBox";
+            this.passwordTxtBox.PasswordChar = '*';
+            this.passwordTxtBox.Size = new System.Drawing.Size(110, 23);
+            this.passwordTxtBox.TabIndex = 8;
+            this.passwordTxtBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.passwordTxtBox_KeyPress);
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(28, 117);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(76, 19);
+            this.label4.Text = "Password:";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(28, 87);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(62, 20);
+            this.label2.Text = "Usuario:";
+            // 
+            // userTxtBox
+            // 
+            this.userTxtBox.Location = new System.Drawing.Point(96, 84);
+            this.userTxtBox.Name = "userTxtBox";
+            this.userTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.userTxtBox.Size = new System.Drawing.Size(110, 23);
+            this.userTxtBox.TabIndex = 2;
+            this.userTxtBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.userTxtBox_KeyPress);
+            // 
+            // logo
+            // 
+            this.logo.Image = ((System.Drawing.Image)(resources.GetObject("logo.Image")));
+            this.logo.Location = new System.Drawing.Point(61, 14);
+            this.logo.Name = "logo";
+            this.logo.Size = new System.Drawing.Size(118, 60);
+            this.logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             // 
             // dataPanel
             // 
@@ -132,6 +206,7 @@
             this.Numregistro.Name = "Numregistro";
             this.Numregistro.Size = new System.Drawing.Size(115, 20);
             this.Numregistro.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.Numregistro.ParentChanged += new System.EventHandler(this.Numregistro_ParentChanged);
             // 
             // label8
             // 
@@ -232,80 +307,6 @@
             this.btnLoadDB.TabIndex = 5;
             this.btnLoadDB.Text = "Cargar Productos";
             this.btnLoadDB.Click += new System.EventHandler(this.btnLoadDB_Click_1);
-            // 
-            // loginPanel
-            // 
-            this.loginPanel.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.loginPanel.Controls.Add(this.osVersionTxt);
-            this.loginPanel.Controls.Add(this.btnIngresar);
-            this.loginPanel.Controls.Add(this.passwordTxtBox);
-            this.loginPanel.Controls.Add(this.label4);
-            this.loginPanel.Controls.Add(this.label2);
-            this.loginPanel.Controls.Add(this.userTxtBox);
-            this.loginPanel.Controls.Add(this.logo);
-            this.loginPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loginPanel.Location = new System.Drawing.Point(0, 0);
-            this.loginPanel.Name = "loginPanel";
-            this.loginPanel.Size = new System.Drawing.Size(229, 237);
-            this.loginPanel.GotFocus += new System.EventHandler(this.loginPanel_GotFocus);
-            // 
-            // osVersionTxt
-            // 
-            this.osVersionTxt.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.osVersionTxt.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Regular);
-            this.osVersionTxt.Location = new System.Drawing.Point(0, 219);
-            this.osVersionTxt.Name = "osVersionTxt";
-            this.osVersionTxt.Size = new System.Drawing.Size(229, 18);
-            this.osVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // btnIngresar
-            // 
-            this.btnIngresar.Location = new System.Drawing.Point(70, 155);
-            this.btnIngresar.Name = "btnIngresar";
-            this.btnIngresar.Size = new System.Drawing.Size(89, 30);
-            this.btnIngresar.TabIndex = 9;
-            this.btnIngresar.Text = "Ingresar";
-            this.btnIngresar.Click += new System.EventHandler(this.btnIngresar_Click);
-            // 
-            // passwordTxtBox
-            // 
-            this.passwordTxtBox.Location = new System.Drawing.Point(96, 113);
-            this.passwordTxtBox.Name = "passwordTxtBox";
-            this.passwordTxtBox.PasswordChar = '*';
-            this.passwordTxtBox.Size = new System.Drawing.Size(110, 23);
-            this.passwordTxtBox.TabIndex = 8;
-            this.passwordTxtBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.passwordTxtBox_KeyPress);
-            // 
-            // label4
-            // 
-            this.label4.Location = new System.Drawing.Point(28, 117);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 19);
-            this.label4.Text = "Password:";
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(28, 87);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 20);
-            this.label2.Text = "Usuario:";
-            // 
-            // userTxtBox
-            // 
-            this.userTxtBox.Location = new System.Drawing.Point(96, 84);
-            this.userTxtBox.Name = "userTxtBox";
-            this.userTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.userTxtBox.Size = new System.Drawing.Size(110, 23);
-            this.userTxtBox.TabIndex = 2;
-            this.userTxtBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.userTxtBox_KeyPress);
-            // 
-            // logo
-            // 
-            this.logo.Image = ((System.Drawing.Image)(resources.GetObject("logo.Image")));
-            this.logo.Location = new System.Drawing.Point(61, 14);
-            this.logo.Name = "logo";
-            this.logo.Size = new System.Drawing.Size(118, 60);
-            this.logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             // 
             // Inventario
             // 
@@ -442,8 +443,8 @@
             this.Text = "Inventario Físico";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Datos.ResumeLayout(false);
-            this.dataPanel.ResumeLayout(false);
             this.loginPanel.ResumeLayout(false);
+            this.dataPanel.ResumeLayout(false);
             this.Inventario.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);

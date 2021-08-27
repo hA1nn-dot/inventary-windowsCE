@@ -15,17 +15,11 @@ namespace prueba
 {
     public partial class Form1 : Form
     {
-        private Thread loadProductsThread;
         private List<string> codesList = new List<string>();
-        private List<string> codesServerList = new List<string>();
-        private List<string> almacenes = new List<string>();
-        private List<string> PersonalData = new List<string>();
-
 
         private MainDB database = new MainDB();         //Clase de la base de datos SQL Server
         private LiteDB lector_database = new LiteDB();  //Clase de la base de datos SQLite
         private User usuario = null;
-        //private string rutaSQLite = LocalDBConnection.getDataSource();
         private string rutaSQLite = "./Application/Inventario Fisico/SQLiteDatalocal/localdb.db";
         private string almacen;
         private string ubicacion;
@@ -37,6 +31,7 @@ namespace prueba
         private bool sesion = false;
         private bool borrar = false;
         public DateTime fechaActual = DateTime.Today;
+
         public Form1()
         {
             InitializeComponent();
@@ -51,7 +46,7 @@ namespace prueba
             fechaPicker.Format = DateTimePickerFormat.Custom;
             
             //fechaPicker.Value = fechaActual;
-
+            crear_DatabaseSQLite();
             if (lector_database.countRegistros("personal") != 0) {
                 User user = User.getInstance();
                 sesion = true;
@@ -341,30 +336,7 @@ namespace prueba
             result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
-                try {
-                    loadLogin();
-                    /*actualizarNum_productos();
-                    update_ProductosLector();
-                    File.Delete(rutaSQLite);
-
-                    if (!File.Exists(rutaSQLite))
-                    {
-                        habilitarBtnInterface();
-                        loadLogin();
-                        sesion = false;
-                        conteoComboBox.Items.Clear();
-                        conteoComboBox.Items.Insert(0, "Conteo 1");
-                        conteoComboBox.Items.Insert(1, "Conteo 2");
-                        conteoComboBox.SelectedIndex = 0;
-                        nombre_usuario = "";
-                    }
-                    else {
-                        MessageBox.Show("No hay registros cargados", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    }*/
-                    
-                }catch(Exception ex){
-                    MessageBox.Show("Error al borrar los datos");
-                }
+                loadLogin();
             }
             
         }
@@ -855,6 +827,11 @@ namespace prueba
         {
             actualizarNum_productos();
             update_ProductosLector();
+        }
+
+        private void Numregistro_ParentChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
