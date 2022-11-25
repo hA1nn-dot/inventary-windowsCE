@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Xml;
 using System.IO;
+using System.Data.SQLite;
 namespace prueba
 {
     class MainDB
@@ -292,7 +293,7 @@ namespace prueba
             return encontrado;
         }
 
-        public void attemptSendProductsToServer(List<Product> listaProductos,string conteo,string usuario) 
+        public void attemptSendProductsToServer(List<Product> listaProductos,string conteo,string usuario)
         {
             string commandString = "";
             int conteoActual = 0;               //Cantidad ConteoActual
@@ -313,7 +314,8 @@ namespace prueba
                         conteoActualizado = conteoActual + cantidad;
 
                         int diferencia = getDiferencia(conteoActualizado, producto);
-                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO1 = {0}, USUARIO1 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
+                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO1 = {0}, USUARIO1 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}"
+                            , conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
                     }
                     else if (conteo == "Conteo 2")
                     {
@@ -321,24 +323,32 @@ namespace prueba
                         conteoActualizado = conteoActual + cantidad;
 
                         int diferencia = getDiferencia(conteoActualizado, producto);
-                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO2 = {0}, USUARIO2 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}", conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
+                        commandString = string.Format("UPDATE CONTEOS_IF SET CONTEO2 = {0}, USUARIO2 = '{1}', DIFERENCIA = {3} WHERE PRODUCTO = {2} AND FECHA = '{4}' AND UNIDAD = {5} AND UBICACION = {6}"
+                            , conteoActualizado.ToString(), usuario, id_producto, diferencia, fecha_cap, id_unidad, id_ubicacion);
                     }
+
+                    handleUpdateConteo(commandString);
+                    SQLiteFunction.changeStatusProduct(producto);
 
                 }
                 catch (SqlException ex)
                 {
                     throw ex;
+                }catch (SQLiteException SQLiteError){
+                    throw SQLiteError;
                 }
             }
+            return;
+        }
 
-            
-
+        private void handleUpdateConteo(string command)
+        {
             try
             {
-                this.connectDB();
-                cmd = new SqlCommand(commandString, connection);
+                connection.Open();
+                cmd = new SqlCommand(command, connection);
                 cmd.ExecuteNonQuery();
-                this.connection.Close();
+                connection.Close();
             }
             catch (SqlException ex)
             {
